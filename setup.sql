@@ -149,7 +149,7 @@ VALUES('3', '236000291452', '2', '1');
 INSERT INTO orderItem(order_id, product_id, store_id, quantity)
 VALUES('4', '036000291452', '2', '3');
 INSERT INTO orderItem(order_id, product_id, store_id, quantity)
-VALUES('5', '036000291453', '3', '1');
+VALUES('4', '036000291453', '3', '1');
 INSERT INTO orderItem(order_id, product_id, store_id, quantity)
 VALUES('6', '236000291452', '3', '20');
 
@@ -284,6 +284,7 @@ CREATE TABLE delivery (
     supplier_id INTEGER NOT NULL,
     store_id INTEGER NOT NULL,
     product_id INTEGER NOT NULL,
+    date_delivery DATE NOT NULL,
     cost REAL NOT NULL,
     quantity INTEGER NOT NULL CHECK(quantity >= 0),
     status TEXT NOT NULL,
@@ -298,17 +299,17 @@ CREATE TABLE delivery (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
-INSERT INTO delivery(supplier_id, store_id, product_id, cost, quantity, status)
-VALUES('1', '1', '036000291452', '1000', '20', 'Successful');
-INSERT INTO delivery(supplier_id, store_id, product_id, cost, quantity, status)
-VALUES('1', '1', '136000291452', '1500', '20', 'Successful');
-INSERT INTO delivery(supplier_id, store_id, product_id, cost, quantity, status)
-VALUES('2', '2', '136000291452', '500', '20', 'Successful');
-INSERT INTO delivery(supplier_id, store_id, product_id, cost, quantity, status)
-VALUES('2', '2', '036000291453', '1000', '10', 'Pending');
-INSERT INTO delivery(supplier_id, store_id, product_id, cost, quantity, status)
-VALUES('3', '3', '136000291452', '400', '30', 'Successful');
-INSERT INTO delivery(supplier_id, store_id, product_id, cost, quantity, status)
-VALUES('3', '3', '236000291452', '1000', '20', 'Successful');
+INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, status)
+VALUES('1', '1', '036000291452', '2022-10-22', '1000', '20', 'Successful');
+INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, status)
+VALUES('2', '1', '136000291452', '2022-11-22', '1500', '20', 'Successful');
+INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, status)
+VALUES('2', '2', '136000291452', '2022-12-22', '500', '20', 'Successful');
+INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, status)
+VALUES('1', '2', '036000291453', '2023-01-22', '1000', '10', 'Pending');
+INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, status)
+VALUES('3', '3', '136000291452', '2023-02-22', '400', '30', 'Successful');
+INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, status)
+VALUES('3', '3', '236000291452', '2023-03-22', '1000', '20', 'Successful');
 COMMIT TRANSACTION;
 .table
