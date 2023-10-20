@@ -1,6 +1,6 @@
 -- อาจเปลี่ยนเป็น Online order
 
-PRAGMA foreign_key=ON;
+PRAGMA foreign_keys = ON;
 .print 'Query02 : The amount of revenue of stores in 2023 or Online order.'
 SELECT store.store_name as 'Store Name',
     SUM(quantity*unit_price) as 'Revenue'
