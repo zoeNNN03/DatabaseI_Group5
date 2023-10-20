@@ -1,4 +1,4 @@
-PRAGMA foreign_key=ON;
+PRAGMA foreign_keys = ON;
 .print 'Query05: Suppliers with Pending Deliveries.'
 SELECT
     supplier.supplier_name AS "Supplier Name",

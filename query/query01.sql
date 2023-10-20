@@ -1,4 +1,4 @@
-PRAGMA foreign_key=ON;
+PRAGMA foreign_keys = ON;
 .print "Query01 : Best Selling Products of Each Store"
 SELECT Store AS "Store Name",
     Product AS "Product Name",

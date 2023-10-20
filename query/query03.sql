@@ -1,4 +1,4 @@
-PRAGMA foreign_key=ON;
+PRAGMA foreign_keys = ON;
 .print 'Query03 : TOP 3 Employee.'
 SELECT employee.f_name,
     employee.l_name,

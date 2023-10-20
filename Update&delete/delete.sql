@@ -1,3 +1,9 @@
-.read query/query01.sql
-DELETE FROM store WHERE store_id = 3;
-.read query/query01.sql
+PRAGMA foreign_keys = ON;
+PRAGMA encoding='UTF-8';
+
+SELECT * FROM contactStore;
+
+DELETE FROM store WHERE store_id = 1;
+.print "Deleted"
+
+SELECT * FROM contactStore;

@@ -1,8 +1,9 @@
-PRAGMA foreign_key = ON;
+PRAGMA foreign_keys = ON;
 PRAGMA encoding='UTF-8';
-BEGIN TRANSACTION;
-UPDATE storeProduct SET store_id = 1
-WHERE store_id = 4;
-COMMIT TRANSACTION;
+SELECT * FROM contactStore;
 
-select * from employee where store_id = 4;
+UPDATE store SET store_id = 4
+WHERE store_name = 'BUUshop test';
+.print "Updated"
+
+SELECT * FROM contactStore;

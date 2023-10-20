@@ -1,6 +1,6 @@
 -- อาจเปลี่ยนเป็นการคิดกำไลของทุกสินค้าที่ขายได้ในร้านค้าที่กำหนด
 -- อยากมี payment ด้วย แต่ตอนนี้ ขก ค่อยทำ
-PRAGMA foreign_key=ON;
+PRAGMA foreign_keys = ON;
 .print "Query04 : Online order."
 SELECT DISTINCT(product_name) AS 'Product Name',
     SUM(orderItem.quantity) AS 'Quantity'

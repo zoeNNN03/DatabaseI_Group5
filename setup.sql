@@ -1,17 +1,17 @@
-PRAGMA foreign_key = ON;
+PRAGMA foreign_keys = ON;
 PRAGMA encoding='UTF-8';
 .mode table
 BEGIN TRANSACTION;
 DROP TABLE IF EXISTS store;
 DROP TABLE IF EXISTS contactStore;
-DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS storeProduct;
-DROP TABLE IF EXISTS customer;
 DROP TABLE IF EXISTS payment;
-DROP TABLE IF EXISTS orderRecord;
 DROP TABLE IF EXISTS orderItem;
+DROP TABLE IF EXISTS orderRecord;
+DROP TABLE IF EXISTS customer;
 DROP TABLE IF EXISTS employee;
 DROP TABLE IF EXISTS delivery;
+DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS supplier;
 DROP TABLE IF EXISTS contactSupplier;
 
@@ -43,33 +43,8 @@ CREATE TABLE contactStore (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
-INSERT INTO contactStore(store_id, email, phone) VALUES('1', 'chulabook.buu@gmail.com', '0863061683');
+INSERT INTO contactStore(store_id, email, phone) VALUES('1', 'Burapha.buu@gmail.com', '0863061683');
 INSERT INTO contactStore(store_id, email, phone) VALUES('2', 'BUUshop@buu.ac.th','0886982864');
-
-CREATE TABLE storeProduct (
-    store_id INTEGER NOT NULL,
-    product_id TEXT NOT NULL,
-    quantity INTEGER NOT NULL CHECK(quantity >= 0),
-    PRIMARY KEY(store_id, product_id)
-    FOREIGN KEY(store_id) REFERENCES store(store_id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-    FOREIGN KEY(product_id) REFERENCES product(product_id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, '036000291452', 10);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, '036000291453', 20);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, '136000291452', 20);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, '236000291452', 10);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, '036000291452', 40);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, '036000291453', 10);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, '136000291452', 10);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, '236000291452', 40);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, '036000291452', 20);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, '036000291453', 10);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, '136000291452', 30);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, '236000291452', 30);
 
 -- Product entity
 CREATE TABLE product (
@@ -91,67 +66,6 @@ INSERT INTO product(product_id, product_name, brand, category, unit_price, stock
 VALUES('136000291452', 'Pen', 'Lancer', 'stationery', '20', '110', 'testUrl');
 INSERT INTO product(product_id, product_name, brand, category, unit_price, stock, image_url, description)
 VALUES('236000291452', 'Python101', 'Chula', 'Book', '285', '70', 'testUrl', 'Learn tutorial python');
-
-CREATE TABLE orderRecord (
-    order_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    customer_id INTEGER NOT NULL,
-    employee_id INTEGER NOT NULL,
-    date_order DATE NOT NULL,
-    status_order TEXT NOT NULL CHECK(status_order in ('Pending', 'Cancel', 'Succeed')),
-    description TEXT,
-    online_status BOOLEAN NOT NULL CHECK(online_status in (0, 1)),
-    FOREIGN KEY(customer_id) REFERENCES customer(customer_id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-    FOREIGN KEY(employee_id) REFERENCES employee(employee_id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
-VALUES('1', '1', '2022-10-15', 'Succeed', '0');
-INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
-VALUES('1', '2', '2023-10-14', 'Pending', '1');
-INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
-VALUES('2', '3', '2023-09-15', 'Succeed', '0');
-INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
-VALUES('4', '4', '2023-07-15', 'Pending', '1');
-INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
-VALUES('5', '5', '2023-10-15', 'Succeed', '1');
-INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
-VALUES('6', '6', '2023-10-15', 'Succeed', '1');
-
-CREATE TABLE orderItem (
-    order_id INTEGER NOT NULL,
-    product_id TEXT NOT NULL CHECK(LENGTH(product_id)=12),
-    store_id INTEGER NOT NULL,
-    quantity INTEGER NOT NULL CHECK(quantity >= 0),
-    PRIMARY KEY(order_id, product_id, store_id),
-    FOREIGN KEY(order_id) REFERENCES orderRecord(order_id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-    FOREIGN KEY(product_id) REFERENCES product(product_id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-    FOREIGN KEY(store_id) REFERENCES store(store_id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-INSERT INTO orderItem(order_id, product_id, store_id, quantity)
-VALUES('1', '036000291452', '1', '1');
-INSERT INTO orderItem(order_id, product_id, store_id, quantity)
-VALUES('1', '036000291453', '1', '10');
-INSERT INTO orderItem(order_id, product_id, store_id, quantity)
-VALUES('2', '036000291453', '1', '5');
-INSERT INTO orderItem(order_id, product_id, store_id, quantity)
-VALUES('3', '136000291452', '2', '10');
-INSERT INTO orderItem(order_id, product_id, store_id, quantity)
-VALUES('3', '236000291452', '2', '1');
-INSERT INTO orderItem(order_id, product_id, store_id, quantity)
-VALUES('4', '036000291452', '2', '3');
-INSERT INTO orderItem(order_id, product_id, store_id, quantity)
-VALUES('4', '036000291453', '3', '1');
-INSERT INTO orderItem(order_id, product_id, store_id, quantity)
-VALUES('6', '236000291452', '3', '20');
 
 -- Customer entity
 CREATE TABLE customer (
@@ -182,36 +96,6 @@ VALUES('Wasupakkanut', 'Wattanakul', '2003-01-01', 'M', '404/5', 'Long Had Bangs
 INSERT INTO customer(f_name, l_name, birthday, gender, address_no, street, sub_district, district, province, zipcode, email, phone)
 VALUES('Nuengthida', 'Wongphuttha', '2003-05-12', 'F', '404/6', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131', '65160404@go.buu.ac.th','0960000000');
 
-CREATE TABLE payment (
-    payment_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    customer_id INTEGER NOT NULL,
-    order_id INTEGER NOT NULL,
-    account_number TEXT NOT NULL CHECK(LENGTH(account_number) >= 10),
-    payment_status TEXT NOT NULL CHECK(payment_status in ('Pending', 'Cancel', 'Completed')),
-    payment_date DATE NOT NULL,
-    payment_gateway TEXT NOT NULL,
-    payment_tax REAL NOT NULL CHECK(payment_tax >= 0),
-    payment_discount REAL NOT NULL CHECK(payment_discount >= 0),
-    receiver_account TEXT NOT NULL CHECK(LENGTH(receiver_account) >= 10),
-    FOREIGN KEY(customer_id) REFERENCES customer(customer_id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-    FOREIGN KEY(order_id) REFERENCES orderRecord(order_id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
-VALUES('1', '1', '7988635891', 'Pending', '2023-10-15', 'Truemoney wallet', '0.07', '0', '5829637697');
-INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
-VALUES('1', '3', '6538064416','Pending', '2023-10-14', 'Paypal', '0.07', '500', '5829637697');
-INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
-VALUES('2', '4', '5179214337','Completed', '2023-09-15', 'Truemoney wallet', '0.07', '0', '9239980822');
-INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
-VALUES('4', '5', '8755667378','Completed', '2023-07-15', 'Cash', '0.07', '300', '9239980822');
-INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
-VALUES('5', '6', '5095881796','Completed', '2022-10-15', 'Credit Card', '0.07', '100', '9862303919');
-INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
-VALUES('5', '6', '5095881796','Completed', '2022-10-15', 'Credit Card', '0.07', '100', '9862303919');
 
 -- Employee entity
 CREATE TABLE employee (
@@ -280,10 +164,127 @@ INSERT INTO contactSupplier(supplier_id, phone) VALUES('1', '0900000001');
 INSERT INTO contactSupplier(supplier_id, email) VALUES('2', 'doble.b@gmail.com');
 INSERT INTO contactSupplier(supplier_id, phone) VALUES('3', '0904500003');
 
+CREATE TABLE storeProduct (
+    store_id INTEGER NOT NULL,
+    product_id TEXT NOT NULL,
+    quantity INTEGER NOT NULL CHECK(quantity >= 0),
+    PRIMARY KEY(store_id, product_id)
+    FOREIGN KEY(store_id) REFERENCES store(store_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY(product_id) REFERENCES product(product_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, '036000291452', 10);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, '036000291453', 20);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, '136000291452', 20);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, '236000291452', 10);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, '036000291452', 40);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, '036000291453', 10);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, '136000291452', 10);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, '236000291452', 40);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, '036000291452', 20);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, '036000291453', 10);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, '136000291452', 30);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, '236000291452', 30);
+
+CREATE TABLE orderRecord (
+    order_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    customer_id INTEGER NOT NULL,
+    employee_id INTEGER NOT NULL,
+    date_order DATE NOT NULL,
+    status_order TEXT NOT NULL CHECK(status_order in ('Pending', 'Cancel', 'Succeed')),
+    description TEXT,
+    online_status BOOLEAN NOT NULL CHECK(online_status in (0, 1)),
+    FOREIGN KEY(customer_id) REFERENCES customer(customer_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY(employee_id) REFERENCES employee(employee_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
+VALUES('1', '1', '2022-10-15', 'Succeed', '0');
+INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
+VALUES('1', '2', '2023-10-14', 'Pending', '1');
+INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
+VALUES('2', '3', '2023-09-15', 'Succeed', '0');
+INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
+VALUES('4', '4', '2023-07-15', 'Pending', '1');
+INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
+VALUES('5', '5', '2023-10-15', 'Succeed', '1');
+INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
+VALUES('6', '6', '2023-10-15', 'Succeed', '1');
+
+CREATE TABLE orderItem (
+    order_id INTEGER NOT NULL,
+    product_id TEXT NOT NULL CHECK(LENGTH(product_id)=12),
+    store_id INTEGER NOT NULL,
+    quantity INTEGER NOT NULL CHECK(quantity >= 0),
+    PRIMARY KEY(order_id, product_id, store_id),
+    FOREIGN KEY(order_id) REFERENCES orderRecord(order_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY(product_id) REFERENCES product(product_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY(store_id) REFERENCES store(store_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+INSERT INTO orderItem(order_id, product_id, store_id, quantity)
+VALUES('1', '036000291452', '1', '1');
+INSERT INTO orderItem(order_id, product_id, store_id, quantity)
+VALUES('1', '036000291453', '1', '10');
+INSERT INTO orderItem(order_id, product_id, store_id, quantity)
+VALUES('2', '036000291453', '1', '5');
+INSERT INTO orderItem(order_id, product_id, store_id, quantity)
+VALUES('3', '136000291452', '2', '10');
+INSERT INTO orderItem(order_id, product_id, store_id, quantity)
+VALUES('3', '236000291452', '2', '1');
+INSERT INTO orderItem(order_id, product_id, store_id, quantity)
+VALUES('4', '036000291452', '2', '3');
+INSERT INTO orderItem(order_id, product_id, store_id, quantity)
+VALUES('4', '036000291453', '3', '1');
+INSERT INTO orderItem(order_id, product_id, store_id, quantity)
+VALUES('6', '236000291452', '3', '20');
+
+CREATE TABLE payment (
+    payment_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    customer_id INTEGER NOT NULL,
+    order_id INTEGER NOT NULL,
+    account_number TEXT NOT NULL CHECK(LENGTH(account_number) >= 10),
+    payment_status TEXT NOT NULL CHECK(payment_status in ('Pending', 'Cancel', 'Completed')),
+    payment_date DATE NOT NULL,
+    payment_gateway TEXT NOT NULL,
+    payment_tax REAL NOT NULL CHECK(payment_tax >= 0),
+    payment_discount REAL NOT NULL CHECK(payment_discount >= 0),
+    receiver_account TEXT NOT NULL CHECK(LENGTH(receiver_account) >= 10),
+    FOREIGN KEY(customer_id) REFERENCES customer(customer_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY(order_id) REFERENCES orderRecord(order_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
+VALUES('1', '1', '7988635891', 'Pending', '2023-10-15', 'Truemoney wallet', '0.07', '0', '5829637697');
+INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
+VALUES('1', '3', '6538064416','Pending', '2023-10-14', 'Paypal', '0.07', '500', '5829637697');
+INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
+VALUES('2', '4', '5179214337','Completed', '2023-09-15', 'Truemoney wallet', '0.07', '0', '9239980822');
+INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
+VALUES('4', '5', '8755667378','Completed', '2023-07-15', 'Cash', '0.07', '300', '9239980822');
+INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
+VALUES('5', '6', '5095881796','Completed', '2022-10-15', 'Credit Card', '0.07', '100', '9862303919');
+INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
+VALUES('5', '6', '5095881796','Completed', '2022-10-15', 'Credit Card', '0.07', '100', '9862303919');
+
 CREATE TABLE delivery (
     supplier_id INTEGER NOT NULL,
     store_id INTEGER NOT NULL,
-    product_id INTEGER NOT NULL,
+    product_id TEXT NOT NULL CHECK(LENGTH(product_id)=12),
     date_delivery DATE NOT NULL,
     cost REAL NOT NULL,
     quantity INTEGER NOT NULL CHECK(quantity >= 0),
