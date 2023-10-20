@@ -19,6 +19,7 @@ DROP TABLE IF EXISTS contactSupplier;
 CREATE TABLE store (
     store_id INTEGER PRIMARY KEY AUTOINCREMENT,
     store_name TEXT NOT NULL CHECK(LENGTH(store_name)>1),
+    store_account TEXT NOT NULL CHECK(LENGTH(store_account) >= 10),
     address_no TEXT NOT NULL,
     street TEXT,
     sub_district TEXT NOT NULL,
@@ -27,12 +28,12 @@ CREATE TABLE store (
     zipcode TEXT NOT NULL
 );
 
-INSERT INTO store(store_name, address_no, street, sub_district, district, province, zipcode)
-VALUES('Chulabook', '169 Student Activity Center Building', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
-INSERT INTO store(store_name, address_no, street, sub_district, district, province, zipcode)
-VALUES('BUUshop', '169 Soi Bang Saen Sai 4 Tai 2', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
-INSERT INTO store(store_name, address_no, street, sub_district, district, province, zipcode)
-VALUES('Chula Test', '169 Soi Bang Saen Sai 4 Tai 2', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
+INSERT INTO store(store_name, store_account, address_no, street, sub_district, district, province, zipcode)
+VALUES('BUUshop test', '5829637697', '169 Student Activity Center Building', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
+INSERT INTO store(store_name, store_account, address_no, street, sub_district, district, province, zipcode)
+VALUES('BUUshop', '9239980822', '169 Soi Bang Saen Sai 4 Tai 2', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
+INSERT INTO store(store_name, store_account, address_no, street, sub_district, district, province, zipcode)
+VALUES('Mr.Johnshop', '9862303919', '169 Soi Bang Saen Sai 4 Tai 2', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
 
 CREATE TABLE contactStore (
     store_id INTEGER NOT NULL,
@@ -47,7 +48,7 @@ INSERT INTO contactStore(store_id, email, phone) VALUES('2', 'BUUshop@buu.ac.th'
 
 CREATE TABLE storeProduct (
     store_id INTEGER NOT NULL,
-    product_id INTEGER NOT NULL,
+    product_id TEXT NOT NULL,
     quantity INTEGER NOT NULL CHECK(quantity >= 0),
     PRIMARY KEY(store_id, product_id)
     FOREIGN KEY(store_id) REFERENCES store(store_id)
@@ -57,22 +58,22 @@ CREATE TABLE storeProduct (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, 1, 10);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, 2, 20);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, 3, 20);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, 4, 10);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, 1, 40);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, 2, 10);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, 3, 10);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, 4, 40);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, 1, 20);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, 2, 10);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, 3, 30);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, 4, 30);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, '036000291452', 10);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, '036000291453', 20);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, '136000291452', 20);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, '236000291452', 10);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, '036000291452', 40);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, '036000291453', 10);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, '136000291452', 10);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, '236000291452', 40);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, '036000291452', 20);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, '036000291453', 10);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, '136000291452', 30);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, '236000291452', 30);
 
 -- Product entity
 CREATE TABLE product (
-    product_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_id TEXT PRIMARY KEY NOT NULL CHECK(LENGTH(product_id)=12),
     product_name TEXT NOT NULL CHECK(LENGTH(product_name)>1),
     brand TEXT,
     category TEXT NOT NULL CHECK(LENGTH(product_name)>1),
@@ -82,22 +83,20 @@ CREATE TABLE product (
     image_url TEXT,
     description TEXT
 );
-INSERT INTO product(product_name, brand, category, size, unit_price, stock, image_url)
-VALUES('T-shirt', 'BUU', 'Clothes', 'S', '380', '60', 'testUrl');
-INSERT INTO product(product_name, category, size, unit_price, stock, image_url, description)
-VALUES('Slacks', 'clothes', 'XL', '420', '70', 'testUrl', 'Student pants');
-INSERT INTO product(product_name, brand, category, unit_price, stock, image_url)
-VALUES('Pen', 'Lancer', 'stationery', '20', '110', 'testUrl');
-INSERT INTO product(product_name, brand, category, unit_price, stock, image_url, description)
-VALUES('Python101', 'Chula', 'Book', '285', '70', 'testUrl', 'Learn tutorial python');
-
+INSERT INTO product(product_id, product_name, brand, category, size, unit_price, stock, image_url)
+VALUES('036000291452', 'T-shirt', 'BUU', 'Clothes', 'S', '380', '60', 'testUrl');
+INSERT INTO product(product_id, product_name, category, size, unit_price, stock, image_url, description)
+VALUES('036000291453', 'Slacks', 'clothes', 'XL', '420', '70', 'testUrl', 'Student pants');
+INSERT INTO product(product_id, product_name, brand, category, unit_price, stock, image_url)
+VALUES('136000291452', 'Pen', 'Lancer', 'stationery', '20', '110', 'testUrl');
+INSERT INTO product(product_id, product_name, brand, category, unit_price, stock, image_url, description)
+VALUES('236000291452', 'Python101', 'Chula', 'Book', '285', '70', 'testUrl', 'Learn tutorial python');
 
 CREATE TABLE orderRecord (
     order_id INTEGER PRIMARY KEY AUTOINCREMENT,
     customer_id INTEGER NOT NULL,
     employee_id INTEGER NOT NULL,
     date_order DATE NOT NULL,
-    total_amount INTEGER NOT NULL CHECK(total_amount >= 0),
     status_order TEXT NOT NULL CHECK(status_order in ('Pending', 'Cancel', 'Succeed')),
     description TEXT,
     online_status BOOLEAN NOT NULL CHECK(online_status in (0, 1)),
@@ -108,22 +107,22 @@ CREATE TABLE orderRecord (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
-INSERT INTO orderRecord(customer_id, employee_id, date_order, total_amount, status_order, online_status)
-VALUES('1', '1', '2022-10-15', '100', 'Succeed', '0');
-INSERT INTO orderRecord(customer_id, employee_id, date_order, total_amount, status_order, online_status)
-VALUES('1', '2', '2023-10-14', '500', 'Pending', '1');
-INSERT INTO orderRecord(customer_id, employee_id, date_order, total_amount, status_order, online_status)
-VALUES('2', '3', '2023-09-15', '1000', 'Succeed', '0');
-INSERT INTO orderRecord(customer_id, employee_id, date_order, total_amount, status_order, online_status)
-VALUES('4', '4', '2023-07-15', '90', 'Pending', '1');
-INSERT INTO orderRecord(customer_id, employee_id, date_order, total_amount, status_order, online_status)
-VALUES('5', '5', '2023-10-15', '50', 'Succeed', '1');
-INSERT INTO orderRecord(customer_id, employee_id, date_order, total_amount, status_order, online_status)
-VALUES('6', '6', '2023-10-15', '50', 'Succeed', '1');
+INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
+VALUES('1', '1', '2022-10-15', 'Succeed', '0');
+INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
+VALUES('1', '2', '2023-10-14', 'Pending', '1');
+INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
+VALUES('2', '3', '2023-09-15', 'Succeed', '0');
+INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
+VALUES('4', '4', '2023-07-15', 'Pending', '1');
+INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
+VALUES('5', '5', '2023-10-15', 'Succeed', '1');
+INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
+VALUES('6', '6', '2023-10-15', 'Succeed', '1');
 
 CREATE TABLE orderItem (
     order_id INTEGER NOT NULL,
-    product_id INTEGER NOT NULL,
+    product_id TEXT NOT NULL CHECK(LENGTH(product_id)=12),
     store_id INTEGER NOT NULL,
     quantity INTEGER NOT NULL CHECK(quantity >= 0),
     PRIMARY KEY(order_id, product_id, store_id),
@@ -137,14 +136,22 @@ CREATE TABLE orderItem (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
-INSERT INTO orderItem(order_id, product_id, store_id, quantity) VALUES('1', '1', '1', '1');
-INSERT INTO orderItem(order_id, product_id, store_id, quantity) VALUES('1', '2', '1', '10');
-INSERT INTO orderItem(order_id, product_id, store_id, quantity) VALUES('2', '2', '1', '5');
-INSERT INTO orderItem(order_id, product_id, store_id, quantity) VALUES('3', '3', '2', '10');
-INSERT INTO orderItem(order_id, product_id, store_id, quantity) VALUES('3', '4', '2', '1');
-INSERT INTO orderItem(order_id, product_id, store_id, quantity) VALUES('4', '1', '2', '3');
-INSERT INTO orderItem(order_id, product_id, store_id, quantity) VALUES('5', '2', '3', '1');
-INSERT INTO orderItem(order_id, product_id, store_id, quantity) VALUES('6', '4', '3', '20');
+INSERT INTO orderItem(order_id, product_id, store_id, quantity)
+VALUES('1', '036000291452', '1', '1');
+INSERT INTO orderItem(order_id, product_id, store_id, quantity)
+VALUES('1', '036000291453', '1', '10');
+INSERT INTO orderItem(order_id, product_id, store_id, quantity)
+VALUES('2', '036000291453', '1', '5');
+INSERT INTO orderItem(order_id, product_id, store_id, quantity)
+VALUES('3', '136000291452', '2', '10');
+INSERT INTO orderItem(order_id, product_id, store_id, quantity)
+VALUES('3', '236000291452', '2', '1');
+INSERT INTO orderItem(order_id, product_id, store_id, quantity)
+VALUES('4', '036000291452', '2', '3');
+INSERT INTO orderItem(order_id, product_id, store_id, quantity)
+VALUES('5', '036000291453', '3', '1');
+INSERT INTO orderItem(order_id, product_id, store_id, quantity)
+VALUES('6', '236000291452', '3', '20');
 
 -- Customer entity
 CREATE TABLE customer (
@@ -175,16 +182,17 @@ VALUES('Wasupakkanut', 'Wattanakul', '2003-01-01', 'M', '404/5', 'Long Had Bangs
 INSERT INTO customer(f_name, l_name, birthday, gender, address_no, street, sub_district, district, province, zipcode, email, phone)
 VALUES('Nuengthida', 'Wongphuttha', '2003-05-12', 'F', '404/6', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131', '65160404@go.buu.ac.th','0960000000');
 
-
 CREATE TABLE payment (
     payment_id INTEGER PRIMARY KEY AUTOINCREMENT,
     customer_id INTEGER NOT NULL,
     order_id INTEGER NOT NULL,
+    account_number TEXT NOT NULL CHECK(LENGTH(account_number) >= 10),
     payment_status TEXT NOT NULL CHECK(payment_status in ('Pending', 'Cancel', 'Completed')),
     payment_date DATE NOT NULL,
-    payment_amount INTEGER NOT NULL CHECK(payment_amount > 0),
     payment_gateway TEXT NOT NULL,
-    receiver_account TEXT NOT NULL,
+    payment_tax REAL NOT NULL CHECK(payment_tax >= 0),
+    payment_discount REAL NOT NULL CHECK(payment_discount >= 0),
+    receiver_account TEXT NOT NULL CHECK(LENGTH(receiver_account) >= 10),
     FOREIGN KEY(customer_id) REFERENCES customer(customer_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
@@ -192,16 +200,18 @@ CREATE TABLE payment (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
-INSERT INTO payment(customer_id, order_id, payment_status, payment_date, payment_amount, payment_gateway, receiver_account)
-VALUES('1', '1', 'Pending', '2023-10-15', '100', 'Truemoney wallet', '123-456-781 ');
-INSERT INTO payment(customer_id, order_id, payment_status, payment_date, payment_amount, payment_gateway, receiver_account)
-VALUES('1', '3', 'Pending', '2023-10-14', '200', 'Paypal', '123-456-782');
-INSERT INTO payment(customer_id, order_id, payment_status, payment_date, payment_amount, payment_gateway, receiver_account)
-VALUES('2', '4', 'Completed', '2023-09-15', '300', 'Truemoney wallet', '123-456-783');
-INSERT INTO payment(customer_id, order_id, payment_status, payment_date, payment_amount, payment_gateway, receiver_account)
-VALUES('4', '5', 'Completed', '2023-07-15', '400', 'Cash', '123-456-784');
-INSERT INTO payment(customer_id, order_id, payment_status, payment_date, payment_amount, payment_gateway, receiver_account)
-VALUES('5', '6', 'Completed', '2022-10-15', '500', 'Credit Card', '123-456-785');
+INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
+VALUES('1', '1', '7988635891', 'Pending', '2023-10-15', 'Truemoney wallet', '0.07', '0', '5829637697');
+INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
+VALUES('1', '3', '6538064416','Pending', '2023-10-14', 'Paypal', '0.07', '500', '5829637697');
+INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
+VALUES('2', '4', '5179214337','Completed', '2023-09-15', 'Truemoney wallet', '0.07', '0', '9239980822');
+INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
+VALUES('4', '5', '8755667378','Completed', '2023-07-15', 'Cash', '0.07', '300', '9239980822');
+INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
+VALUES('5', '6', '5095881796','Completed', '2022-10-15', 'Credit Card', '0.07', '100', '9862303919');
+INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
+VALUES('5', '6', '5095881796','Completed', '2022-10-15', 'Credit Card', '0.07', '100', '9862303919');
 
 -- Employee entity
 CREATE TABLE employee (
@@ -212,7 +222,7 @@ CREATE TABLE employee (
     gender TEXT NOT NULL CHECK(gender in ('M', 'F')),
     birthday DATE NOT NULL,
     job_position TEXT NOT NULL,
-    salary INTEGER NOT NULL CHECK(salary > 0),
+    salary REAL NOT NULL CHECK(salary >= 0),
     email TEXT NOT NULL UNIQUE CHECK(LENGTH(email)>4),
     phone TEXT NOT NULL UNIQUE CHECK(LENGTH(phone)=10),
     address_no TEXT NOT NULL,
@@ -242,6 +252,7 @@ VALUES('3','Peter','Parker', 'M', '2000-02-05','spiderman@dc.com','0067891111', 
 CREATE TABLE supplier (
     supplier_id INTEGER PRIMARY KEY AUTOINCREMENT,
     supplier_name TEXT NOT NULL CHECK(LENGTH(supplier_name)>=1),
+    supplier_account TEXT NOT NULL CHECK(LENGTH(supplier_account) >= 10),
     address_no TEXT NOT NULL,
     street TEXT,
     sub_district TEXT NOT NULL,
@@ -249,12 +260,12 @@ CREATE TABLE supplier (
     province TEXT NOT NULL,
     zipcode TEXT NOT NULL
 );
-INSERT INTO supplier(supplier_name, address_no, sub_district, district, province, zipcode)
-VALUES('Doble A', '400/1', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
-INSERT INTO supplier(supplier_name, address_no, street, sub_district, district, province, zipcode)
-VALUES('Doble B', '401/2', 'Sukhumvit', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
-INSERT INTO supplier(supplier_name, address_no, street, sub_district, district, province, zipcode)
-VALUES('Doble C', '402/3', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
+INSERT INTO supplier(supplier_name, supplier_account, address_no, sub_district, district, province, zipcode)
+VALUES('Doble A', '8907285498', '400/1', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
+INSERT INTO supplier(supplier_name, supplier_account, address_no, street, sub_district, district, province, zipcode)
+VALUES('Doble B', '7372677905','401/2', 'Sukhumvit', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
+INSERT INTO supplier(supplier_name, supplier_account, address_no, street, sub_district, district, province, zipcode)
+VALUES('Doble C', '8171914542','402/3', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
 
 CREATE TABLE contactSupplier (
     supplier_id INTEGER NOT NULL,
@@ -273,6 +284,7 @@ CREATE TABLE delivery (
     supplier_id INTEGER NOT NULL,
     store_id INTEGER NOT NULL,
     product_id INTEGER NOT NULL,
+    cost REAL NOT NULL,
     quantity INTEGER NOT NULL CHECK(quantity >= 0),
     status TEXT NOT NULL,
     PRIMARY KEY(supplier_id, store_id, product_id),
@@ -286,17 +298,17 @@ CREATE TABLE delivery (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
-INSERT INTO delivery(supplier_id, store_id, product_id, quantity, status)
-VALUES('1', '1', '1', '20', 'Successful');
-INSERT INTO delivery(supplier_id, store_id, product_id, quantity, status)
-VALUES('1', '1', '3', '20', 'Successful');
-INSERT INTO delivery(supplier_id, store_id, product_id, quantity, status)
-VALUES('2', '2', '3', '20', 'Successful');
-INSERT INTO delivery(supplier_id, store_id, product_id, quantity, status)
-VALUES('2', '2', '2', '10', 'Pending');
-INSERT INTO delivery(supplier_id, store_id, product_id, quantity, status)
-VALUES('3', '3', '3', '30', 'Successful');
-INSERT INTO delivery(supplier_id, store_id, product_id, quantity, status)
-VALUES('3', '3', '4', '20', 'Successful');
+INSERT INTO delivery(supplier_id, store_id, product_id, cost, quantity, status)
+VALUES('1', '1', '036000291452', '1000', '20', 'Successful');
+INSERT INTO delivery(supplier_id, store_id, product_id, cost, quantity, status)
+VALUES('1', '1', '136000291452', '1500', '20', 'Successful');
+INSERT INTO delivery(supplier_id, store_id, product_id, cost, quantity, status)
+VALUES('2', '2', '136000291452', '500', '20', 'Successful');
+INSERT INTO delivery(supplier_id, store_id, product_id, cost, quantity, status)
+VALUES('2', '2', '036000291453', '1000', '10', 'Pending');
+INSERT INTO delivery(supplier_id, store_id, product_id, cost, quantity, status)
+VALUES('3', '3', '136000291452', '400', '30', 'Successful');
+INSERT INTO delivery(supplier_id, store_id, product_id, cost, quantity, status)
+VALUES('3', '3', '236000291452', '1000', '20', 'Successful');
 COMMIT TRANSACTION;
 .table
