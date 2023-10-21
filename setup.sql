@@ -166,7 +166,7 @@ INSERT INTO contactSupplier(supplier_id, phone) VALUES('3', '0904500003');
 
 CREATE TABLE storeProduct (
     store_id INTEGER NOT NULL,
-    product_id TEXT NOT NULL,
+    product_id TEXT NOT NULL CHECK(LENGTH(product_id)=12),
     quantity INTEGER NOT NULL CHECK(quantity >= 0),
     PRIMARY KEY(store_id, product_id)
     FOREIGN KEY(store_id) REFERENCES store(store_id)
