@@ -1,13 +1,19 @@
 PRAGMA foreign_keys = ON;
-.print 'Query03 : TOP 3 Employee.'
-SELECT employee.f_name,
-    employee.l_name,
-    SUM(product.unit_price * orderItem.quantity) AS total_sales
-FROM employee
-JOIN orderRecord ON orderRecord.employee_id = employee.employee_id
-JOIN orderItem ON orderItem.order_id = orderRecord.order_id
-JOIN product ON product.product_id = orderItem.product_id
-GROUP BY employee.f_name, employee.l_name
-HAVING total_sales > 1000
-ORDER BY total_sales DESC
-LIMIT 3;
+.print "Query03 : qurey Online order in orderRecord and detail."
+SELECT orderRecord.order_id AS "Order",
+    orderRecord.date_order AS "Date",
+    orderRecord.online_status AS "Online Status",
+    GROUP_CONCAT(orderItem.product_id, '
+') AS "Product ID",
+    GROUP_CONCAT(orderItem.quantity, '
+') AS "Quantity",
+    GROUP_CONCAT(product.unit_price, '
+') AS "Unit Price",
+    SUM(orderItem.quantity*product.unit_price) AS "total_price",
+    employee.f_name||' '||employee.l_name AS "Manage"
+FROM orderRecord
+INNER JOIN employee ON employee.employee_id = orderRecord.employee_id
+INNER JOIN orderItem ON orderItem.order_id = orderRecord.order_id
+INNER JOIN product ON product.product_id = orderItem.product_id
+WHERE orderRecord.online_status = 1
+GROUP BY orderItem.order_id;

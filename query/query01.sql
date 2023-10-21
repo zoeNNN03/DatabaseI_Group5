@@ -8,7 +8,8 @@ FROM (SELECT store_name AS Store,
         product_name AS Product,
         SUM(quantity) AS Quantity,
         SUM(unit_price * quantity) AS Total,
-        RANK() OVER (PARTITION BY store.store_id ORDER BY SUM(quantity) DESC) AS Ranking
+        RANK() OVER (PARTITION BY store.store_id 
+                    ORDER BY SUM(quantity) DESC) AS Ranking
     FROM orderItem
     INNER JOIN store ON store.store_id = orderItem.store_id
     INNER JOIN product ON product.product_id = orderItem.product_id
