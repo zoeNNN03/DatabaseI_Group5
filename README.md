@@ -3,15 +3,10 @@
 ## Member
 
 65160035 Jakkarin Phunjhob
-
 65160056 Sunita Sathianjarukarn
-
 65160138 Thanpisit Jantakate
-
 65160282 Wasupakkanut Wattanakul
-
 65160284 Veerapat Saardiem
-
 65160404 Nuengthida Wongphuttha
 
 ## Project Detail
