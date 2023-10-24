@@ -9,7 +9,7 @@ SELECT orderRecord.order_id AS "Order",
 ') AS "Quantity",
     GROUP_CONCAT(product.unit_price, '
 ') AS "Unit Price(bath)",
-    SUM(orderItem.quantity*product.unit_price) AS "total_price(bath)",
+    SUM(orderItem.quantity*product.unit_price) AS "total_price(BATH)",
     employee.f_name||' '||employee.l_name AS "Manage"
 FROM orderRecord
 INNER JOIN employee ON employee.employee_id = orderRecord.employee_id
