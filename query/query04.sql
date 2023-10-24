@@ -3,7 +3,7 @@ PRAGMA foreign_keys = ON;
 .print 'the most profit.'
 SELECT employee.f_name,
     employee.l_name,
-    SUM(product.unit_price * orderItem.quantity) AS "total_sales(bath)"
+    SUM(product.unit_price * orderItem.quantity) AS "total_sales(BATH)"
 FROM employee
 JOIN orderRecord ON orderRecord.employee_id = employee.employee_id
 JOIN orderItem ON orderItem.order_id = orderRecord.order_id
