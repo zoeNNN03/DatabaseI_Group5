@@ -3,7 +3,7 @@ PRAGMA foreign_keys = ON;
 SELECT Store AS "Store Name",
     Product AS "Product Name",
     Quantity,
-    Total AS "Total Sales"
+    Total / 100 AS "Total Sales"
 FROM (SELECT store_name AS Store,
         product_name AS Product,
         SUM(quantity) AS Quantity,
