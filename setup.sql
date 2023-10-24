@@ -44,7 +44,7 @@ CREATE TABLE product (
     brand TEXT,
     category TEXT NOT NULL CHECK(LENGTH(product_name)>1),
     size TEXT CHECK(size in ('S', 'M', 'L', 'XL', '2XL', '3XL')),
-    unit_price INTEGER NOT NULL CHECK(unit_price >= 0),
+    unit_price REAL NOT NULL CHECK(unit_price >= 0),
     stock INTEGER NOT NULL CHECK(stock >= 0),
     image_url TEXT,
     description TEXT
@@ -154,7 +154,7 @@ CREATE TABLE employee (
                                      (1 == 2)
                                   END)),
     job_position TEXT NOT NULL,
-    salary INTEGER NOT NULL CHECK(salary >= 0),
+    salary REAL NOT NULL CHECK(salary >= 0),
     email TEXT NOT NULL UNIQUE CHECK(LENGTH(email)>4),
     phone TEXT NOT NULL UNIQUE CHECK(LENGTH(phone)=10),
     address_no TEXT NOT NULL,
@@ -322,8 +322,8 @@ CREATE TABLE payment (
                                      (1 == 2)
                                   END)),
     payment_gateway TEXT NOT NULL,
-    payment_tax INTEGER NOT NULL CHECK(payment_tax >= 0),
-    payment_discount INTEGER NOT NULL CHECK(payment_discount >= 0),
+    payment_tax REAL NOT NULL CHECK(payment_tax >= 0),
+    payment_discount REAL NOT NULL CHECK(payment_discount >= 0),
     receiver_account TEXT NOT NULL CHECK(LENGTH(receiver_account) >= 10),
     FOREIGN KEY(customer_id) REFERENCES customer(customer_id)
         ON DELETE CASCADE
@@ -377,7 +377,7 @@ CREATE TABLE delivery (
                                    ELSE
                                      (1 == 2)
                                   END)),
-    cost INTEGER NOT NULL,
+    cost REAL NOT NULL,
     quantity INTEGER NOT NULL CHECK(quantity >= 0),
     delivery_status TEXT NOT NULL CHECK(delivery_status in ('Pending', 'Cancel', 'Completed')),
     PRIMARY KEY(supplier_id, store_id, product_id),

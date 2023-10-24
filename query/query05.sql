@@ -6,7 +6,7 @@ SELECT
     store.store_name AS "Store Name",
     date_delivery AS "Delivery Date",
     quantity AS "Quantity",
-    cost AS "Cost",
+    cost AS "Cost(bath)",
     GROUP_CONCAT(contactSupplier.email, ', ') AS "Email",
     GROUP_CONCAT(contactSupplier.phone, ', ') AS "Contact",
     delivery.delivery_status AS "Status"
