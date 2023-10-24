@@ -27,12 +27,6 @@ CREATE TABLE store (
     province TEXT NOT NULL,
     zipcode TEXT NOT NULL
 );
--- INSERT INTO store(store_name, store_account, address_no, street, sub_district, district, province, zipcode)
--- VALUES('BUUshop test', '5829637697', '169 Student Activity Center Building', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
--- INSERT INTO store(store_name, store_account, address_no, street, sub_district, district, province, zipcode)
--- VALUES('BUUshop', '9239980822', '169 Soi Bang Saen Sai 4 Tai 2', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
--- INSERT INTO store(store_name, store_account, address_no, street, sub_district, district, province, zipcode)
--- VALUES('Mr.Johnshop', '9862303919', '169 Soi Bang Saen Sai 4 Tai 2', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
 
 CREATE TABLE contactStore (
     store_id INTEGER NOT NULL,
@@ -42,8 +36,6 @@ CREATE TABLE contactStore (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
--- INSERT INTO contactStore(store_id, email, phone) VALUES('1', 'Burapha.buu@gmail.com', '0863061683');
--- INSERT INTO contactStore(store_id, email, phone) VALUES('2', 'BUUshop@buu.ac.th','0886982864');
 
 -- Product entity
 CREATE TABLE product (
@@ -57,22 +49,53 @@ CREATE TABLE product (
     image_url TEXT,
     description TEXT
 );
--- INSERT INTO product(product_id, product_name, brand, category, size, unit_price, stock, image_url)
--- VALUES('036000291452', 'T-shirt', 'BUU', 'Clothes', 'S', '380', '60', 'testUrl');
--- INSERT INTO product(product_id, product_name, category, size, unit_price, stock, image_url, description)
--- VALUES('036000291453', 'Slacks', 'clothes', 'XL', '420', '70', 'testUrl', 'Student pants');
--- INSERT INTO product(product_id, product_name, brand, category, unit_price, stock, image_url)
--- VALUES('136000291452', 'Pen', 'Lancer', 'stationery', '20', '110', 'testUrl');
--- INSERT INTO product(product_id, product_name, brand, category, unit_price, stock, image_url, description)
--- VALUES('236000291452', 'Python101', 'Chula', 'Book', '285', '70', 'testUrl', 'Learn tutorial python');
 
 -- Customer entity
 CREATE TABLE customer (
     customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
     f_name TEXT NOT NULL CHECK(LENGTH(f_name) > 1),
     l_name TEXT NOT NULL CHECK(LENGTH(l_name) > 1),
-    birthday DATE NOT NULL,
-    gender TEXT CHECK(gender in ('M', 'F')),
+    birthday DATE NOT NULL CHECK ((birthday GLOB '[12][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]') AND
+                                (CAST(strftime('%Y',date(birthday)) AS INTEGER)
+                                    BETWEEN 1900 AND 2023) AND
+                                    -- Using current date will not work to specify the end of the range.
+                                    -- SQLite says doing that is bad because it is a
+                                    -- "non-deterministic use of date() in a CHECK constraint"
+                                    -- i.e, do not try this: (CAST(strftime('%Y',date('now')) AS INTEGER))
+                                    -- I hard-coded 2023.  This would require the DBA to do a database dump,
+                                    -- update the year in the dump file, and a reload the dump
+                                    -- on December 31 of every year, which would need to be in
+                                    -- the application's documentation for the DBA....  Eventually
+                                    -- the 1900 would also be updated to a larger number too.
+                                    -- I assume nobody born before 1910 (113 years old!) is
+                                    -- going to be looking for a job from a recruiter.
+                                 (CAST(strftime('%m',date(birthday)) AS INTEGER) BETWEEN 1 AND 12) AND
+                                 (CASE
+                                   WHEN (CAST(strftime('%m',date(birthday)) AS INTEGER) IN (1,3,5,7,8,10,12)) THEN
+                                     (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 31)
+                                   WHEN (CAST(strftime('%m',date(birthday)) AS INTEGER) IN (4,6,9,11)) THEN
+                                     (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 30)
+                                   WHEN (CAST(strftime('%m',date(birthday)) AS INTEGER) == 2) THEN
+                                     CASE
+                                       WHEN (CAST(strftime('%Y',date(birthday)) AS INTEGER) % 4 != 0) THEN
+                                         (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 28)
+                                       ELSE
+                                         CASE
+                                           WHEN (CAST(strftime('%Y',date(birthday)) AS INTEGER) % 100 == 0) THEN
+                                             CASE
+                                               WHEN (CAST(strftime('%Y',date(birthday)) AS INTEGER) % 400 == 0) THEN
+                                                 (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 29)
+                                               ELSE
+                                                 (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 28)
+                                             END
+                                           ELSE
+                                             (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 29)
+                                           END
+                                       END
+                                   ELSE
+                                     (1 == 2)
+                                  END)),
+    gender TEXT CHECK(gender in ('M', 'F', 'H')),
     email TEXT NOT NULL UNIQUE CHECK(LENGTH(email)>4),
     phone TEXT NOT NULL UNIQUE CHECK(LENGTH(phone)=10),
     address_no TEXT NOT NULL,
@@ -82,18 +105,6 @@ CREATE TABLE customer (
     province TEXT NOT NULL,
     zipcode TEXT NOT NULL
 );
--- INSERT INTO customer(f_name, l_name, birthday, gender, address_no, street, sub_district, district, province, zipcode, email, phone)
--- VALUES('Jakkarin', 'Phunjhob', '2003-03-03', 'M', '404/1', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131', '65160035@go.buu.ac.th','0910000000');
--- INSERT INTO customer(f_name, l_name, birthday, gender, address_no, street, sub_district, district, province, zipcode, email, phone)
--- VALUES('Veerapat', 'Saardiem', '2003-11-11', 'F', '404/2', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131', '65160284@go.buu.ac.th','0920000000');
--- INSERT INTO customer(f_name, l_name, birthday, gender, address_no, street, sub_district, district, province, zipcode, email, phone)
--- VALUES('Thanpisit', 'Jantakate', '2003-10-10', 'F', '404/3', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131', '65160138@go.buu.ac.th','0930000000');
--- INSERT INTO customer(f_name, l_name, birthday, gender, address_no, street, sub_district, district, province, zipcode, email, phone)
--- VALUES('Sunita', 'Miro', '2003-09-09', 'M', '404/14', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131', '65160056@go.buu.ac.th','0940000000');
--- INSERT INTO customer(f_name, l_name, birthday, gender, address_no, street, sub_district, district, province, zipcode, email, phone)
--- VALUES('Wasupakkanut', 'Wattanakul', '2003-01-01', 'M', '404/5', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131', '65160282@go.buu.ac.th','0950000000');
--- INSERT INTO customer(f_name, l_name, birthday, gender, address_no, street, sub_district, district, province, zipcode, email, phone)
--- VALUES('Nuengthida', 'Wongphuttha', '2003-05-12', 'F', '404/6', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131', '65160404@go.buu.ac.th','0960000000');
 
 -- Employee entity
 CREATE TABLE employee (
@@ -101,8 +112,47 @@ CREATE TABLE employee (
     store_id INTEGER NOT NULL,
     f_name TEXT NOT NULL CHECK(LENGTH(f_name)>1),
     l_name TEXT NOT NULL CHECK(LENGTH(l_name)>1),
-    gender TEXT NOT NULL CHECK(gender in ('M', 'F')),
-    birthday DATE NOT NULL,
+    gender TEXT NOT NULL CHECK(gender in ('M', 'F', 'H')),
+    birthday DATE NOT NULL CHECK ((birthday GLOB '[12][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]') AND
+                                (CAST(strftime('%Y',date(birthday)) AS INTEGER)
+                                    BETWEEN 1900 AND 2023) AND
+                                    -- Using current date will not work to specify the end of the range.
+                                    -- SQLite says doing that is bad because it is a
+                                    -- "non-deterministic use of date() in a CHECK constraint"
+                                    -- i.e, do not try this: (CAST(strftime('%Y',date('now')) AS INTEGER))
+                                    -- I hard-coded 2023.  This would require the DBA to do a database dump,
+                                    -- update the year in the dump file, and a reload the dump
+                                    -- on December 31 of every year, which would need to be in
+                                    -- the application's documentation for the DBA....  Eventually
+                                    -- the 1900 would also be updated to a larger number too.
+                                    -- I assume nobody born before 1910 (113 years old!) is
+                                    -- going to be looking for a job from a recruiter.
+                                 (CAST(strftime('%m',date(birthday)) AS INTEGER) BETWEEN 1 AND 12) AND
+                                 (CASE
+                                   WHEN (CAST(strftime('%m',date(birthday)) AS INTEGER) IN (1,3,5,7,8,10,12)) THEN
+                                     (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 31)
+                                   WHEN (CAST(strftime('%m',date(birthday)) AS INTEGER) IN (4,6,9,11)) THEN
+                                     (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 30)
+                                   WHEN (CAST(strftime('%m',date(birthday)) AS INTEGER) == 2) THEN
+                                     CASE
+                                       WHEN (CAST(strftime('%Y',date(birthday)) AS INTEGER) % 4 != 0) THEN
+                                         (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 28)
+                                       ELSE
+                                         CASE
+                                           WHEN (CAST(strftime('%Y',date(birthday)) AS INTEGER) % 100 == 0) THEN
+                                             CASE
+                                               WHEN (CAST(strftime('%Y',date(birthday)) AS INTEGER) % 400 == 0) THEN
+                                                 (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 29)
+                                               ELSE
+                                                 (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 28)
+                                             END
+                                           ELSE
+                                             (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 29)
+                                           END
+                                       END
+                                   ELSE
+                                     (1 == 2)
+                                  END)),
     job_position TEXT NOT NULL,
     salary REAL NOT NULL CHECK(salary >= 0),
     email TEXT NOT NULL UNIQUE CHECK(LENGTH(email)>4),
@@ -117,18 +167,6 @@ CREATE TABLE employee (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
--- INSERT INTO employee(store_id, f_name, l_name, gender, birthday, email, phone, job_position, salary, address_no, street, sub_district, district, province, zipcode)
--- VALUES('1', 'John','Smith', 'M', '1973-10-03','mrjs@dizzy.com','5551234567', 'Manager', '25,000', '101/1', 'Sukhumvit', 'Klongtumru', 'MeungChonburi', 'Chon Buri', '20000');
--- INSERT INTO employee(store_id, f_name, l_name, gender, birthday, email, phone, job_position, salary, address_no, sub_district, district, province, zipcode)
--- VALUES('1', 'Jane','Smith', 'F', '2000-11-11', 'msjs@dizzy.com','5551234568', 'Seller', '15,000', '102/2', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
--- INSERT INTO employee(store_id, f_name, l_name, gender, birthday, email, phone, job_position, salary, address_no, street, sub_district, district, province, zipcode)
--- VALUES('2','Clarence','Kentucky', 'F', '2000-12-05','ck@deemag.co.th','5559999999', 'General', '10,000', '103/3', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
--- INSERT INTO employee(store_id, f_name, l_name, gender, birthday, email, phone, job_position, salary, address_no, street, sub_district, district, province, zipcode)
--- VALUES('2','Bruce','Bell', 'M', '2000-12-05','brucebell@deemag.co.th','0012311111', 'Manager', '30,000', '104/4', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
--- INSERT INTO employee(store_id, f_name, l_name, gender, birthday, email, phone, job_position, salary, address_no, sub_district, district, province, zipcode)
--- VALUES('3', 'Clark','Kent', 'M', '2000-12-05','superman@dc.com','0011113451', 'Seller', '20,000', '105/5', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
--- INSERT INTO employee(store_id, f_name, l_name, gender, birthday, email, phone, job_position, salary, address_no, sub_district, district, province, zipcode)
--- VALUES('3','Peter','Parker', 'M', '2000-02-05','spiderman@dc.com','0067891111', 'Seller', '20,000', '106/6', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
 
 -- supplier entity
 CREATE TABLE supplier (
@@ -142,12 +180,6 @@ CREATE TABLE supplier (
     province TEXT NOT NULL,
     zipcode TEXT NOT NULL
 );
--- INSERT INTO supplier(supplier_name, supplier_account, address_no, sub_district, district, province, zipcode)
--- VALUES('Doble A', '8907285498', '400/1', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
--- INSERT INTO supplier(supplier_name, supplier_account, address_no, street, sub_district, district, province, zipcode)
--- VALUES('Doble B', '7372677905','401/2', 'Sukhumvit', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
--- INSERT INTO supplier(supplier_name, supplier_account, address_no, street, sub_district, district, province, zipcode)
--- VALUES('Doble C', '8171914542','402/3', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
 
 CREATE TABLE contactSupplier (
     supplier_id INTEGER NOT NULL,
@@ -157,10 +189,6 @@ CREATE TABLE contactSupplier (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
--- INSERT INTO contactSupplier(supplier_id, email, phone) VALUES('1', 'doble.a@gmail.com', '0900005544');
--- INSERT INTO contactSupplier(supplier_id, phone) VALUES('1', '0900000001');
--- INSERT INTO contactSupplier(supplier_id, email) VALUES('2', 'doble.b@gmail.com');
--- INSERT INTO contactSupplier(supplier_id, phone) VALUES('3', '0904500003');
 
 CREATE TABLE storeProduct (
     store_id INTEGER NOT NULL,
@@ -174,25 +202,52 @@ CREATE TABLE storeProduct (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
--- INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, '036000291452', 10);
--- INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, '036000291453', 20);
--- INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, '136000291452', 20);
--- INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, '236000291452', 10);
--- INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, '036000291452', 40);
--- INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, '036000291453', 10);
--- INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, '136000291452', 10);
--- INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, '236000291452', 40);
--- INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, '036000291452', 20);
--- INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, '036000291453', 10);
--- INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, '136000291452', 30);
--- INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, '236000291452', 30);
 
 CREATE TABLE orderRecord (
     order_id INTEGER PRIMARY KEY AUTOINCREMENT,
     customer_id INTEGER NOT NULL,
     employee_id INTEGER NOT NULL,
-    date_order DATE NOT NULL,
-    status_order TEXT NOT NULL CHECK(status_order in ('Pending', 'Cancel', 'Succeed')),
+    date_order DATE NOT NULL CHECK ((date_order GLOB '[12][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]') AND
+                                (CAST(strftime('%Y',date(date_order)) AS INTEGER)
+                                    BETWEEN 1900 AND 2023) AND
+                                    -- Using current date will not work to specify the end of the range.
+                                    -- SQLite says doing that is bad because it is a
+                                    -- "non-deterministic use of date() in a CHECK constraint"
+                                    -- i.e, do not try this: (CAST(strftime('%Y',date('now')) AS INTEGER))
+                                    -- I hard-coded 2023.  This would require the DBA to do a database dump,
+                                    -- update the year in the dump file, and a reload the dump
+                                    -- on December 31 of every year, which would need to be in
+                                    -- the application's documentation for the DBA....  Eventually
+                                    -- the 1900 would also be updated to a larger number too.
+                                    -- I assume nobody born before 1910 (113 years old!) is
+                                    -- going to be looking for a job from a recruiter.
+                                 (CAST(strftime('%m',date(date_order)) AS INTEGER) BETWEEN 1 AND 12) AND
+                                 (CASE
+                                   WHEN (CAST(strftime('%m',date(date_order)) AS INTEGER) IN (1,3,5,7,8,10,12)) THEN
+                                     (CAST(strftime('%d',date(date_order)) AS INTEGER) BETWEEN 1 AND 31)
+                                   WHEN (CAST(strftime('%m',date(date_order)) AS INTEGER) IN (4,6,9,11)) THEN
+                                     (CAST(strftime('%d',date(date_order)) AS INTEGER) BETWEEN 1 AND 30)
+                                   WHEN (CAST(strftime('%m',date(date_order)) AS INTEGER) == 2) THEN
+                                     CASE
+                                       WHEN (CAST(strftime('%Y',date(date_order)) AS INTEGER) % 4 != 0) THEN
+                                         (CAST(strftime('%d',date(date_order)) AS INTEGER) BETWEEN 1 AND 28)
+                                       ELSE
+                                         CASE
+                                           WHEN (CAST(strftime('%Y',date(date_order)) AS INTEGER) % 100 == 0) THEN
+                                             CASE
+                                               WHEN (CAST(strftime('%Y',date(date_order)) AS INTEGER) % 400 == 0) THEN
+                                                 (CAST(strftime('%d',date(date_order)) AS INTEGER) BETWEEN 1 AND 29)
+                                               ELSE
+                                                 (CAST(strftime('%d',date(date_order)) AS INTEGER) BETWEEN 1 AND 28)
+                                             END
+                                           ELSE
+                                             (CAST(strftime('%d',date(date_order)) AS INTEGER) BETWEEN 1 AND 29)
+                                           END
+                                       END
+                                   ELSE
+                                     (1 == 2)
+                                  END)),
+    order_status TEXT NOT NULL CHECK(order_status in ('Pending', 'Cancel', 'Completed')),
     description TEXT,
     online_status BOOLEAN NOT NULL CHECK(online_status in (0, 1)),
     FOREIGN KEY(customer_id) REFERENCES customer(customer_id)
@@ -202,18 +257,6 @@ CREATE TABLE orderRecord (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
--- INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
--- VALUES('1', '1', '2022-10-15', 'Succeed', '0');
--- INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
--- VALUES('1', '2', '2023-10-14', 'Pending', '1');
--- INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
--- VALUES('2', '3', '2023-09-15', 'Succeed', '0');
--- INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
--- VALUES('4', '4', '2023-07-15', 'Pending', '1');
--- INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
--- VALUES('5', '5', '2023-10-15', 'Succeed', '1');
--- INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
--- VALUES('6', '6', '2023-10-15', 'Succeed', '1');
 
 CREATE TABLE orderItem (
     order_id INTEGER NOT NULL,
@@ -231,22 +274,6 @@ CREATE TABLE orderItem (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
--- INSERT INTO orderItem(order_id, product_id, store_id, quantity)
--- VALUES('1', '036000291452', '1', '1');
--- INSERT INTO orderItem(order_id, product_id, store_id, quantity)
--- VALUES('1', '036000291453', '1', '10');
--- INSERT INTO orderItem(order_id, product_id, store_id, quantity)
--- VALUES('2', '036000291453', '1', '5');
--- INSERT INTO orderItem(order_id, product_id, store_id, quantity)
--- VALUES('3', '136000291452', '2', '10');
--- INSERT INTO orderItem(order_id, product_id, store_id, quantity)
--- VALUES('3', '236000291452', '2', '1');
--- INSERT INTO orderItem(order_id, product_id, store_id, quantity)
--- VALUES('4', '036000291452', '2', '3');
--- INSERT INTO orderItem(order_id, product_id, store_id, quantity)
--- VALUES('4', '036000291453', '3', '1');
--- INSERT INTO orderItem(order_id, product_id, store_id, quantity)
--- VALUES('6', '236000291452', '3', '20');
 
 CREATE TABLE payment (
     payment_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -254,7 +281,46 @@ CREATE TABLE payment (
     order_id INTEGER NOT NULL,
     account_number TEXT NOT NULL CHECK(LENGTH(account_number) >= 10),
     payment_status TEXT NOT NULL CHECK(payment_status in ('Pending', 'Cancel', 'Completed')),
-    payment_date DATE NOT NULL,
+    payment_date DATE NOT NULL CHECK ((payment_date GLOB '[12][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]') AND
+                                (CAST(strftime('%Y',date(payment_date)) AS INTEGER)
+                                    BETWEEN 1900 AND 2023) AND
+                                    -- Using current date will not work to specify the end of the range.
+                                    -- SQLite says doing that is bad because it is a
+                                    -- "non-deterministic use of date() in a CHECK constraint"
+                                    -- i.e, do not try this: (CAST(strftime('%Y',date('now')) AS INTEGER))
+                                    -- I hard-coded 2023.  This would require the DBA to do a database dump,
+                                    -- update the year in the dump file, and a reload the dump
+                                    -- on December 31 of every year, which would need to be in
+                                    -- the application's documentation for the DBA....  Eventually
+                                    -- the 1900 would also be updated to a larger number too.
+                                    -- I assume nobody born before 1910 (113 years old!) is
+                                    -- going to be looking for a job from a recruiter.
+                                 (CAST(strftime('%m',date(payment_date)) AS INTEGER) BETWEEN 1 AND 12) AND
+                                 (CASE
+                                   WHEN (CAST(strftime('%m',date(payment_date)) AS INTEGER) IN (1,3,5,7,8,10,12)) THEN
+                                     (CAST(strftime('%d',date(payment_date)) AS INTEGER) BETWEEN 1 AND 31)
+                                   WHEN (CAST(strftime('%m',date(payment_date)) AS INTEGER) IN (4,6,9,11)) THEN
+                                     (CAST(strftime('%d',date(payment_date)) AS INTEGER) BETWEEN 1 AND 30)
+                                   WHEN (CAST(strftime('%m',date(payment_date)) AS INTEGER) == 2) THEN
+                                     CASE
+                                       WHEN (CAST(strftime('%Y',date(payment_date)) AS INTEGER) % 4 != 0) THEN
+                                         (CAST(strftime('%d',date(payment_date)) AS INTEGER) BETWEEN 1 AND 28)
+                                       ELSE
+                                         CASE
+                                           WHEN (CAST(strftime('%Y',date(payment_date)) AS INTEGER) % 100 == 0) THEN
+                                             CASE
+                                               WHEN (CAST(strftime('%Y',date(payment_date)) AS INTEGER) % 400 == 0) THEN
+                                                 (CAST(strftime('%d',date(payment_date)) AS INTEGER) BETWEEN 1 AND 29)
+                                               ELSE
+                                                 (CAST(strftime('%d',date(payment_date)) AS INTEGER) BETWEEN 1 AND 28)
+                                             END
+                                           ELSE
+                                             (CAST(strftime('%d',date(payment_date)) AS INTEGER) BETWEEN 1 AND 29)
+                                           END
+                                       END
+                                   ELSE
+                                     (1 == 2)
+                                  END)),
     payment_gateway TEXT NOT NULL,
     payment_tax REAL NOT NULL CHECK(payment_tax >= 0),
     payment_discount REAL NOT NULL CHECK(payment_discount >= 0),
@@ -266,27 +332,54 @@ CREATE TABLE payment (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
--- INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
--- VALUES('1', '1', '7988635891', 'Pending', '2023-10-15', 'Truemoney wallet', '0.07', '0', '5829637697');
--- INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
--- VALUES('1', '3', '6538064416','Pending', '2023-10-14', 'Paypal', '0.07', '500', '5829637697');
--- INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
--- VALUES('2', '4', '5179214337','Completed', '2023-09-15', 'Truemoney wallet', '0.07', '0', '9239980822');
--- INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
--- VALUES('4', '5', '8755667378','Completed', '2023-07-15', 'Cash', '0.07', '300', '9239980822');
--- INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
--- VALUES('5', '6', '5095881796','Completed', '2022-10-15', 'Credit Card', '0.07', '100', '9862303919');
--- INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
--- VALUES('5', '6', '5095881796','Completed', '2022-10-15', 'Credit Card', '0.07', '100', '9862303919');
 
 CREATE TABLE delivery (
     supplier_id INTEGER NOT NULL,
     store_id INTEGER NOT NULL,
     product_id TEXT NOT NULL CHECK(LENGTH(product_id)=12),
-    date_delivery DATE NOT NULL,
+    date_delivery DATE NOT NULL CHECK ((date_delivery GLOB '[12][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]') AND
+                                (CAST(strftime('%Y',date(date_delivery)) AS INTEGER)
+                                    BETWEEN 1900 AND 2023) AND
+                                    -- Using current date will not work to specify the end of the range.
+                                    -- SQLite says doing that is bad because it is a
+                                    -- "non-deterministic use of date() in a CHECK constraint"
+                                    -- i.e, do not try this: (CAST(strftime('%Y',date('now')) AS INTEGER))
+                                    -- I hard-coded 2023.  This would require the DBA to do a database dump,
+                                    -- update the year in the dump file, and a reload the dump
+                                    -- on December 31 of every year, which would need to be in
+                                    -- the application's documentation for the DBA....  Eventually
+                                    -- the 1900 would also be updated to a larger number too.
+                                    -- I assume nobody born before 1910 (113 years old!) is
+                                    -- going to be looking for a job from a recruiter.
+                                 (CAST(strftime('%m',date(date_delivery)) AS INTEGER) BETWEEN 1 AND 12) AND
+                                 (CASE
+                                   WHEN (CAST(strftime('%m',date(date_delivery)) AS INTEGER) IN (1,3,5,7,8,10,12)) THEN
+                                     (CAST(strftime('%d',date(date_delivery)) AS INTEGER) BETWEEN 1 AND 31)
+                                   WHEN (CAST(strftime('%m',date(date_delivery)) AS INTEGER) IN (4,6,9,11)) THEN
+                                     (CAST(strftime('%d',date(date_delivery)) AS INTEGER) BETWEEN 1 AND 30)
+                                   WHEN (CAST(strftime('%m',date(date_delivery)) AS INTEGER) == 2) THEN
+                                     CASE
+                                       WHEN (CAST(strftime('%Y',date(date_delivery)) AS INTEGER) % 4 != 0) THEN
+                                         (CAST(strftime('%d',date(date_delivery)) AS INTEGER) BETWEEN 1 AND 28)
+                                       ELSE
+                                         CASE
+                                           WHEN (CAST(strftime('%Y',date(date_delivery)) AS INTEGER) % 100 == 0) THEN
+                                             CASE
+                                               WHEN (CAST(strftime('%Y',date(date_delivery)) AS INTEGER) % 400 == 0) THEN
+                                                 (CAST(strftime('%d',date(date_delivery)) AS INTEGER) BETWEEN 1 AND 29)
+                                               ELSE
+                                                 (CAST(strftime('%d',date(date_delivery)) AS INTEGER) BETWEEN 1 AND 28)
+                                             END
+                                           ELSE
+                                             (CAST(strftime('%d',date(date_delivery)) AS INTEGER) BETWEEN 1 AND 29)
+                                           END
+                                       END
+                                   ELSE
+                                     (1 == 2)
+                                  END)),
     cost REAL NOT NULL,
     quantity INTEGER NOT NULL CHECK(quantity >= 0),
-    status TEXT NOT NULL,
+    delivery_status TEXT NOT NULL CHECK(delivery_status in ('Pending', 'Cancel', 'Completed')),
     PRIMARY KEY(supplier_id, store_id, product_id),
     FOREIGN KEY(supplier_id) REFERENCES supplier(supplier_id)
         ON DELETE CASCADE
@@ -298,17 +391,5 @@ CREATE TABLE delivery (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
--- INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, status)
--- VALUES('1', '1', '036000291452', '2022-10-22', '1000', '20', 'Successful');
--- INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, status)
--- VALUES('2', '1', '136000291452', '2022-11-22', '1500', '20', 'Successful');
--- INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, status)
--- VALUES('2', '2', '136000291452', '2022-12-22', '500', '20', 'Successful');
--- INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, status)
--- VALUES('1', '2', '036000291453', '2023-01-22', '1000', '10', 'Pending');
--- INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, status)
--- VALUES('3', '3', '136000291452', '2023-02-22', '400', '30', 'Successful');
--- INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, status)
--- VALUES('3', '3', '236000291452', '2023-03-22', '1000', '20', 'Successful');
 COMMIT TRANSACTION;
 .table

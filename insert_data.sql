@@ -80,18 +80,18 @@ INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, '13600029145
 INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, '236000291452', 30);
 
 -- orderRecord
-INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
-VALUES('1', '1', '2022-10-15', 'Succeed', '0');
-INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
+INSERT INTO orderRecord(customer_id, employee_id, date_order, order_status, online_status)
+VALUES('1', '1', '2022-10-15', 'Completed', '0');
+INSERT INTO orderRecord(customer_id, employee_id, date_order, order_status, online_status)
 VALUES('1', '2', '2023-10-14', 'Pending', '1');
-INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
-VALUES('2', '3', '2023-09-15', 'Succeed', '0');
-INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
+INSERT INTO orderRecord(customer_id, employee_id, date_order, order_status, online_status)
+VALUES('2', '3', '2023-09-15', 'Completed', '0');
+INSERT INTO orderRecord(customer_id, employee_id, date_order, order_status, online_status)
 VALUES('4', '4', '2023-07-15', 'Pending', '1');
-INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
-VALUES('5', '5', '2023-10-15', 'Succeed', '1');
-INSERT INTO orderRecord(customer_id, employee_id, date_order, status_order, online_status)
-VALUES('6', '6', '2023-10-15', 'Succeed', '1');
+INSERT INTO orderRecord(customer_id, employee_id, date_order, order_status, online_status)
+VALUES('5', '5', '2023-10-15', 'Completed', '1');
+INSERT INTO orderRecord(customer_id, employee_id, date_order, order_status, online_status)
+VALUES('6', '6', '2023-10-15', 'Completed', '1');
 
 -- orderItem
 INSERT INTO orderItem(order_id, product_id, store_id, quantity)
@@ -126,16 +126,17 @@ INSERT INTO payment(customer_id, order_id, account_number, payment_status, payme
 VALUES('5', '6', '5095881796','Completed', '2022-10-15', 'Credit Card', '0.07', '100', '9862303919');
 
 -- delivery
-INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, status)
-VALUES('1', '1', '036000291452', '2022-10-22', '1000', '20', 'Successful');
-INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, status)
-VALUES('2', '1', '136000291452', '2022-11-22', '1500', '20', 'Successful');
-INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, status)
-VALUES('2', '2', '136000291452', '2022-12-22', '500', '20', 'Successful');
-INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, status)
+INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, delivery_status)
+VALUES('1', '1', '036000291452', '2022-10-22', '1000', '20', 'Completed');
+INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, delivery_status)
+VALUES('2', '1', '136000291452', '2022-11-22', '1500', '20', 'Completed');
+INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, delivery_status)
+VALUES('2', '2', '136000291452', '2022-12-22', '500', '20', 'Completed');
+INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, delivery_status)
 VALUES('1', '2', '036000291453', '2023-01-22', '1000', '10', 'Pending');
-INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, status)
-VALUES('3', '3', '136000291452', '2023-02-22', '400', '30', 'Successful');
-INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, status)
-VALUES('3', '3', '236000291452', '2023-03-22', '1000', '20', 'Successful');
+INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, delivery_status)
+VALUES('3', '3', '136000291452', '2023-02-22', '400', '30', 'Completed');
+INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, delivery_status)
+VALUES('3', '3', '236000291452', '2023-03-22', '1000', '20', 'Completed');
+.print 'Successfully inserted example'
 COMMIT TRANSACTION;
