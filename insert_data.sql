@@ -15,13 +15,13 @@ INSERT INTO contactStore(store_id, email, phone) VALUES('2', 'BUUshop@buu.ac.th'
 
 -- product
 INSERT INTO product(product_id, product_name, brand, category, size, unit_price, stock, image_url)
-VALUES('036000291452', 'T-shirt', 'BUU', 'clothes', 'S', '380', '60', 'testUrl');
+VALUES('036000291452', 'T-shirt', 'BUU', 'clothes', 'S', '38000', '60', 'testUrl');
 INSERT INTO product(product_id, product_name, category, size, unit_price, stock, image_url, description)
-VALUES('036000291453', 'Slacks', 'clothes', 'XL', '420', '70', 'testUrl', 'Student pants');
+VALUES('036000291453', 'Slacks', 'clothes', 'XL', '42000', '70', 'testUrl', 'Student pants');
 INSERT INTO product(product_id, product_name, brand, category, unit_price, stock, image_url)
-VALUES('136000291452', 'Pen', 'Lancer', 'stationery', '20', '110', 'testUrl');
+VALUES('136000291452', 'Pen', 'Lancer', 'stationery', '2000', '110', 'testUrl');
 INSERT INTO product(product_id, product_name, brand, category, unit_price, stock, image_url, description)
-VALUES('236000291452', 'Python101', 'Chula', 'book', '285', '70', 'testUrl', 'Learn tutorial python');
+VALUES('236000291452', 'Python101', 'Chula', 'book', '28500', '70', 'testUrl', 'Learn tutorial python');
 
 -- customer
 INSERT INTO customer(f_name, l_name, birthday, gender, address_no, street, sub_district, district, province, zipcode, email, phone)
@@ -113,30 +113,30 @@ VALUES('6', '236000291452', '3', '20');
 
 -- payment
 INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
-VALUES('1', '1', '7988635891', 'Pending', '2023-10-15', 'Truemoney wallet', '0.07', '0', '5829637697');
+VALUES('1', '1', '7988635891', 'Pending', '2023-10-15', 'Truemoney wallet', '7', '0', '5829637697');
 INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
-VALUES('1', '3', '6538064416','Pending', '2023-10-14', 'Paypal', '0.07', '500', '5829637697');
+VALUES('1', '3', '6538064416','Pending', '2023-10-14', 'Paypal', '7', '50000', '5829637697');
 INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
-VALUES('2', '4', '5179214337','Completed', '2023-09-15', 'Truemoney wallet', '0.07', '0', '9239980822');
+VALUES('2', '4', '5179214337','Completed', '2023-09-15', 'Truemoney wallet', '7', '0', '9239980822');
 INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
-VALUES('4', '5', '8755667378','Completed', '2023-07-15', 'Cash', '0.07', '300', '9239980822');
+VALUES('4', '5', '8755667378','Completed', '2023-07-15', 'Cash', '7', '30000', '9239980822');
 INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
-VALUES('5', '6', '5095881796','Completed', '2022-10-15', 'Credit Card', '0.07', '100', '9862303919');
+VALUES('5', '6', '5095881796','Completed', '2022-10-15', 'Credit Card', '7', '10000', '9862303919');
 INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
-VALUES('5', '6', '5095881796','Completed', '2022-10-15', 'Credit Card', '0.07', '100', '9862303919');
+VALUES('5', '6', '5095881796','Completed', '2022-10-15', 'Credit Card', '7', '10000', '9862303919');
 
 -- delivery
 INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, delivery_status)
-VALUES('1', '1', '036000291452', '2022-10-22', '1000', '20', 'Completed');
+VALUES('1', '1', '036000291452', '2022-10-22', '100000', '20', 'Completed');
 INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, delivery_status)
-VALUES('2', '1', '136000291452', '2022-11-22', '1500', '20', 'Completed');
+VALUES('2', '1', '136000291452', '2022-11-22', '150000', '20', 'Completed');
 INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, delivery_status)
-VALUES('2', '2', '136000291452', '2022-12-22', '500', '20', 'Completed');
+VALUES('2', '2', '136000291452', '2022-12-22', '50000', '20', 'Completed');
 INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, delivery_status)
-VALUES('1', '2', '036000291453', '2023-01-22', '1000', '10', 'Pending');
+VALUES('1', '2', '036000291453', '2023-01-22', '100000', '10', 'Pending');
 INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, delivery_status)
-VALUES('3', '3', '136000291452', '2023-02-22', '400', '30', 'Completed');
+VALUES('3', '3', '136000291452', '2023-02-22', '40000', '30', 'Completed');
 INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, delivery_status)
-VALUES('3', '3', '236000291452', '2023-03-22', '1000', '20', 'Completed');
+VALUES('3', '3', '236000291452', '2023-03-22', '100000', '20', 'Completed');
 .print 'Successfully inserted example'
 COMMIT TRANSACTION;
