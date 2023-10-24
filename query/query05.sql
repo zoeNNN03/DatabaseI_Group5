@@ -9,11 +9,11 @@ SELECT
     cost AS "Cost",
     GROUP_CONCAT(contactSupplier.email, ', ') AS "Email",
     GROUP_CONCAT(contactSupplier.phone, ', ') AS "Contact",
-    delivery.status AS "Status"
+    delivery.delivery_status AS "Status"
 FROM supplier
 INNER JOIN contactSupplier ON supplier.supplier_id = contactSupplier.supplier_id
 INNER JOIN delivery ON supplier.supplier_id = delivery.supplier_id
 INNER JOIN product ON product.product_id = delivery.product_id
 INNER JOIN store ON store.store_id = delivery.store_id
-WHERE delivery.status = 'Pending'
+WHERE delivery.delivery_status = 'Pending'
 GROUP BY supplier.supplier_id;
