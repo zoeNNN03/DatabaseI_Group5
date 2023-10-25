@@ -23,7 +23,7 @@ Description: From surveying the cooperative store within Burapha University, Ban
 ## How to use this code?
 After unzip file.
 1. Install sqlite(https://www.sqlite.org/download.html) to ../DatabaseI_Group5
-2. Run terminal or cmd, and change directory to ../ProjectDBclass
+2. Run terminal or cmd, and change directory to ../DatabaseI_Group5
 3. Run './sqlite3.exe [your_database]'.
 4. Use '.read setup.sql' to create tables, if nothing goes wrong the names of all tables will be displayed.
 5. Use '.read insert_data.sql' for insert example data.
