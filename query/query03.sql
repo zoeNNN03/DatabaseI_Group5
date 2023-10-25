@@ -9,7 +9,7 @@ SELECT orderRecord.order_id AS "Order",
     GROUP_CONCAT(orderItem.quantity, '
 ') AS "Quantity",
     GROUP_CONCAT(product.unit_price, '
-') AS "Unit Price(bath)",
+') AS "Unit Price(BATH)",
 -- sum of quantity mutiply by unit price
     SUM(orderItem.quantity*product.unit_price) AS "total_price(BATH)",
 -- employee name who make the order by concat first name and last name as one column
