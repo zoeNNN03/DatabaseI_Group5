@@ -1,3 +1,5 @@
+-- This is a script to setup and create tables the database for the project.
+
 PRAGMA foreign_keys = ON; -- This is a must for SQLite3 foreign keys to work!
 PRAGMA encoding='UTF-8'; -- This is a must for SQLite3 to support UTF-8 encoding!
 -- This is a must for SQLite3 to display tables in a nice format!

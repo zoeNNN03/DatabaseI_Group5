@@ -10,11 +10,10 @@ update: 2023/10/25
 65160404 Nuengthida Wongphuttha
 
 ## Project Detail
-์Name: Cooperative store in Burapha University, Bangsaen Campus
+Name: Cooperative store in Burapha University, Bangsaen Campus
 Subject: 89033064 Database I
 Description: From surveying the cooperative store within Burapha University, Bangsaen Campus, we found that if combined with the cooperative store of Burapha Bumpen School in Bangsaen, there would be two current cooperative stores. And in the future, the number might increase. Therefore, we design database for streamline the operations and data access of stores into one database. This will make managing cooperative stores within Burapha University, Bangsaen Campus more efficient..
 'What if?' questions
-
 1. What If GM want to knows top3 of best-selling product of the store in university and know a total price of it for develop marketing better more than before
 2. What If GM want to know about the amount of revenue of BUU Store in 2023
 3. What If GM want to know about details of your Online order how can you explain to them
