@@ -1,5 +1,3 @@
--- This file is used to insert example data into the database
-
 PRAGMA foreign_keys = ON;
 PRAGMA encoding='UTF-8';
 BEGIN TRANSACTION;

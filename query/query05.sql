@@ -18,7 +18,5 @@ INNER JOIN contactSupplier ON supplier.supplier_id = contactSupplier.supplier_id
 INNER JOIN delivery ON supplier.supplier_id = delivery.supplier_id
 INNER JOIN product ON product.product_id = delivery.product_id
 INNER JOIN store ON store.store_id = delivery.store_id
-WHERE delivery.delivery_status = 'Pending' -- get only pending delivery
-GROUP BY supplier.supplier_id; -- group by supplier id for get only one row of each supplier
-
--- Path: query/query05.sql
+WHERE delivery.delivery_status = 'Pending'
+GROUP BY supplier.supplier_id;

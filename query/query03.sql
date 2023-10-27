@@ -20,7 +20,5 @@ FROM orderRecord
 INNER JOIN employee ON employee.employee_id = orderRecord.employee_id
 INNER JOIN orderItem ON orderItem.order_id = orderRecord.order_id
 INNER JOIN product ON product.product_id = orderItem.product_id
-WHERE orderRecord.online_status = 1 -- get only online order
+WHERE orderRecord.online_status = 1
 GROUP BY orderItem.order_id;
-
--- Path: query/query03.sql
