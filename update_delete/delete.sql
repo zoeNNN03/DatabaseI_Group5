@@ -2,8 +2,8 @@ PRAGMA foreign_keys = ON; -- enable foreign key
 PRAGMA encoding='UTF-8'; -- set encoding to UTF-8
 .print "Delete testing"
 -- set up database
-.read setup.sql
-.read insert_data.sql
+.read ../setup.sql
+.read ../insert_data.sql
 
 -- show foreign key test of delete
 SELECT * FROM contactStore;
