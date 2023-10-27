@@ -1,7 +1,7 @@
 -- This is a query to show best selling products of each store. by using RANK() OVER (PARTITION BY store.store_id ORDER BY SUM(quantity) DESC) AS Ranking
 
 PRAGMA foreign_keys = ON; -- enable foreign key
-.print "Query01 : Best Selling Products of Each Store" -- set encoding to UTF-8
+.print "Query01 : Best Selling Products of Each Store"
 SELECT Store AS "Store Name",
     Product AS "Product Name",
     Quantity,
