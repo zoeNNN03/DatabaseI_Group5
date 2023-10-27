@@ -342,6 +342,7 @@ CREATE TABLE delivery (
 );
 COMMIT TRANSACTION;
 .table
+
 -- This is a run another script to insert data into the database
 .read insert_data.sql
 
