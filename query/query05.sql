@@ -1,3 +1,5 @@
+-- This is a query to show Suppliers with Pending Deliveries. by using GROUP_CONCAT(contactSupplier.email, ', ') AS "Email",
+
 PRAGMA foreign_keys = ON;
 .print 'Query05: Suppliers with Pending Deliveries.'
 SELECT
@@ -6,7 +8,7 @@ SELECT
     store.store_name AS "Store Name",
     date_delivery AS "Delivery Date",
     quantity AS "Quantity",
-    cost AS "Cost(BATH)",
+    cost AS "Cost(bath)",
     -- group concat for get all email and phone in one row if there are more than one contact of each supplier
     GROUP_CONCAT(contactSupplier.email, ', ') AS "Email",
     GROUP_CONCAT(contactSupplier.phone, ', ') AS "Contact",

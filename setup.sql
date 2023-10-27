@@ -3,7 +3,7 @@
 PRAGMA foreign_keys = ON; -- This is a must for SQLite3 foreign keys to work!
 PRAGMA encoding='UTF-8'; -- This is a must for SQLite3 to support UTF-8 encoding!
 -- This is a must for SQLite3 to display tables in a nice format!
-.mode table 
+.mode table
 BEGIN TRANSACTION; -- This is a must for SQLite3 to execute multiple queries in one go or dividing work into TRANSACTION!
 
 -- Drop tables if they exist (in case you want to re-run this script)
@@ -38,7 +38,7 @@ CREATE TABLE store (
 CREATE TABLE contactStore (
     store_id INTEGER NOT NULL,
     email TEXT UNIQUE CHECK(LENGTH(email)>4),
-    phone TEXT UNIQUE CHECK(LENGTH(phone)=10),
+    phone TEXT UNIQUE CHECK(LENGTH(phone)=10 and (phone GLOB '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]')), -- This is check for 10 digits only!
     FOREIGN KEY(store_id) REFERENCES store(store_id) -- This is a must for SQLite3 foreign keys to work!
         ON DELETE CASCADE -- This is a must for SQLite3 to cascade delete!
         ON UPDATE CASCADE -- This is a must for SQLite3 to cascade update!
@@ -46,14 +46,13 @@ CREATE TABLE contactStore (
 
 -- Product entity
 CREATE TABLE product (
-    product_id TEXT PRIMARY KEY NOT NULL CHECK(LENGTH(product_id)=12), -- Check product_id length to be 12 characters following UPC qrcode standard
+    product_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_upc TEXT NOT NULL CHECK(LENGTH(product_upc)=12), -- Check product_id length to be 12 characters following UPC qrcode standard
     product_name TEXT NOT NULL CHECK(LENGTH(product_name)>1),
     brand TEXT,
     category TEXT NOT NULL CHECK(LENGTH(product_name)>1),
     size TEXT CHECK(size in ('S', 'M', 'L', 'XL', '2XL', '3XL')), -- Check size to be one of these values of clothing size
     unit_price REAL NOT NULL CHECK(unit_price >= 0), -- Check unit_price to be positive
-    stock INTEGER NOT NULL CHECK(stock >= 0), -- Check stock to be positive
-    image_url TEXT,
     description TEXT
 );
 
@@ -62,38 +61,38 @@ CREATE TABLE customer (
     customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
     f_name TEXT NOT NULL CHECK(LENGTH(f_name) > 1),
     l_name TEXT NOT NULL CHECK(LENGTH(l_name) > 1),
-    birthday DATE NOT NULL CHECK((birthday GLOB '[12][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]') AND -- Check birthday to be in YYYY-MM-DD format
+    birthday DATE NOT NULL CHECK ((birthday GLOB '[12][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]') AND -- Check birthday to be in YYYY-MM-DD format
                                 (CAST(strftime('%Y',date(birthday)) AS INTEGER)
                                     BETWEEN 1900 AND 2023) AND -- Check year DATE to be in range of 1900-2023
-                                    (CAST(strftime('%m',date(birthday)) AS INTEGER) BETWEEN 1 AND 12) AND -- Check month DATE to be in range of 1-12
-                                    (CASE
-                                        WHEN (CAST(strftime('%m',date(birthday)) AS INTEGER) IN (1,3,5,7,8,10,12)) THEN -- Check day DATE to be in range of 1-31 for months that have 31 days
-                                            (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 31)
-                                        WHEN (CAST(strftime('%m',date(birthday)) AS INTEGER) IN (4,6,9,11)) THEN -- Check day DATE to be in range of 1-30 for months that have 30 days
-                                            (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 30)
-                                        WHEN (CAST(strftime('%m',date(birthday)) AS INTEGER) == 2) THEN -- Check day DATE to be in range of 1-28 for February
-                                            CASE
-                                                WHEN (CAST(strftime('%Y',date(birthday)) AS INTEGER) % 4 != 0) THEN -- Check day DATE to be in range of 1-28 for February in non-leap years
-                                                    (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 28)
-                                            ELSE
-                                                CASE
-                                                    WHEN (CAST(strftime('%Y',date(birthday)) AS INTEGER) % 100 == 0) THEN -- Check day DATE to be in range of 1-28 for February in non-leap years
-                                                        CASE
-                                                            WHEN (CAST(strftime('%Y',date(birthday)) AS INTEGER) % 400 == 0) THEN -- Check day DATE to be in range of 1-29 for February in leap years
-                                                                (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 29)
-                                                            ELSE                                                                  -- Check day DATE to be in range of 1-28 for February in non-leap years
-                                                                (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 28)
-                                                        END
-                                                    ELSE
-                                                        (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 29) -- Check day DATE to be in range of 1-29 for February in leap years
-                                                END
-                                            END
-                                    ELSE
-                                        (1 == 2) -- FALSE condition
-                                    END)),
+                                 (CAST(strftime('%m',date(birthday)) AS INTEGER) BETWEEN 1 AND 12) AND -- Check month DATE to be in range of 1-12
+                                 (CASE
+                                   WHEN (CAST(strftime('%m',date(birthday)) AS INTEGER) IN (1,3,5,7,8,10,12)) THEN -- Check day DATE to be in range of 1-31 for months with 31 days
+                                     (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 31)
+                                   WHEN (CAST(strftime('%m',date(birthday)) AS INTEGER) IN (4,6,9,11)) THEN -- Check day DATE to be in range of 1-30 for months with 30 days
+                                     (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 30)
+                                   WHEN (CAST(strftime('%m',date(birthday)) AS INTEGER) == 2) THEN -- Check day DATE to be in range of 1-28 for February
+                                     CASE
+                                       WHEN (CAST(strftime('%Y',date(birthday)) AS INTEGER) % 4 != 0) THEN -- Check day DATE to be in range of 1-28 for February in non-leap years
+                                         (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 28)
+                                       ELSE
+                                         CASE
+                                           WHEN (CAST(strftime('%Y',date(birthday)) AS INTEGER) % 100 == 0) THEN -- Check day DATE to be in range of 1-29 for February in leap years divisible by 100
+                                             CASE
+                                               WHEN (CAST(strftime('%Y',date(birthday)) AS INTEGER) % 400 == 0) THEN -- Check day DATE to be in range of 1-29 for February in leap years divisible by 400
+                                                 (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 29)
+                                               ELSE                                                                  -- Check day DATE to be in range of 1-28 for February in non-leap years
+                                                 (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 28)
+                                             END
+                                           ELSE
+                                             (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 29) -- Check day DATE to be in range of 1-29 for February in leap years
+                                           END
+                                       END
+                                   ELSE
+                                     (1 == 2) -- FALSE condition
+                                  END)),
     gender TEXT CHECK(gender in ('M', 'F', 'H')), -- M is male, F is Female, H is Hermaphrodite
     email TEXT NOT NULL UNIQUE CHECK(LENGTH(email)>4),
-    phone TEXT NOT NULL UNIQUE CHECK(LENGTH(phone)=10),
+    phone TEXT NOT NULL UNIQUE CHECK(LENGTH(phone)=10 and (phone GLOB '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]')),
     address_no TEXT NOT NULL,
     street TEXT,
     sub_district TEXT NOT NULL,
@@ -109,39 +108,39 @@ CREATE TABLE employee (
     f_name TEXT NOT NULL CHECK(LENGTH(f_name)>1),
     l_name TEXT NOT NULL CHECK(LENGTH(l_name)>1),
     gender TEXT NOT NULL CHECK(gender in ('M', 'F', 'H')),
-    birthday DATE NOT NULL CHECK((birthday GLOB '[12][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]') AND 
+    birthday DATE NOT NULL CHECK ((birthday GLOB '[12][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]') AND
                                 (CAST(strftime('%Y',date(birthday)) AS INTEGER)
-                                    BETWEEN 1900 AND 2023) AND 
-                                    (CAST(strftime('%m',date(birthday)) AS INTEGER) BETWEEN 1 AND 12) AND 
-                                    (CASE
-                                        WHEN (CAST(strftime('%m',date(birthday)) AS INTEGER) IN (1,3,5,7,8,10,12)) THEN 
-                                            (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 31)
-                                        WHEN (CAST(strftime('%m',date(birthday)) AS INTEGER) IN (4,6,9,11)) THEN 
-                                            (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 30)
-                                        WHEN (CAST(strftime('%m',date(birthday)) AS INTEGER) == 2) THEN 
-                                            CASE
-                                                WHEN (CAST(strftime('%Y',date(birthday)) AS INTEGER) % 4 != 0) THEN 
-                                                    (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 28)
-                                            ELSE
-                                                CASE
-                                                    WHEN (CAST(strftime('%Y',date(birthday)) AS INTEGER) % 100 == 0) THEN 
-                                                        CASE
-                                                            WHEN (CAST(strftime('%Y',date(birthday)) AS INTEGER) % 400 == 0) THEN 
-                                                                (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 29)
-                                                            ELSE
-                                                                (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 28) 
-                                                        END
-                                                    ELSE
-                                                        (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 29) 
-                                                END
-                                            END
-                                    ELSE
-                                        (1 == 2) 
-                                    END)),
-    job_position TEXT NOT NULL,
+                                    BETWEEN 1900 AND 2023) AND
+                                 (CAST(strftime('%m',date(birthday)) AS INTEGER) BETWEEN 1 AND 12) AND
+                                 (CASE
+                                   WHEN (CAST(strftime('%m',date(birthday)) AS INTEGER) IN (1,3,5,7,8,10,12)) THEN
+                                     (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 31)
+                                   WHEN (CAST(strftime('%m',date(birthday)) AS INTEGER) IN (4,6,9,11)) THEN
+                                     (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 30)
+                                   WHEN (CAST(strftime('%m',date(birthday)) AS INTEGER) == 2) THEN
+                                     CASE
+                                       WHEN (CAST(strftime('%Y',date(birthday)) AS INTEGER) % 4 != 0) THEN
+                                         (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 28)
+                                       ELSE
+                                         CASE
+                                           WHEN (CAST(strftime('%Y',date(birthday)) AS INTEGER) % 100 == 0) THEN
+                                             CASE
+                                               WHEN (CAST(strftime('%Y',date(birthday)) AS INTEGER) % 400 == 0) THEN
+                                                 (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 29)
+                                               ELSE
+                                                 (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 28)
+                                             END
+                                           ELSE
+                                             (CAST(strftime('%d',date(birthday)) AS INTEGER) BETWEEN 1 AND 29)
+                                           END
+                                       END
+                                   ELSE
+                                     (1 == 2)
+                                  END)),
+    job_position TEXT NOT NULL CHECK(job_position in ('Manager', 'Seller', 'Cashier')), -- Check job_position to be one of these values
     salary REAL NOT NULL CHECK(salary >= 0), -- Check salary to be positive
     email TEXT NOT NULL UNIQUE CHECK(LENGTH(email)>4),
-    phone TEXT NOT NULL UNIQUE CHECK(LENGTH(phone)=10),
+    phone TEXT NOT NULL UNIQUE CHECK(LENGTH(phone)=10 and (phone GLOB '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]')),
     address_no TEXT NOT NULL,
     street TEXT,
     sub_district TEXT NOT NULL,
@@ -166,20 +165,18 @@ CREATE TABLE supplier (
     zipcode TEXT NOT NULL
 );
 
--- contactSupplier entity
 CREATE TABLE contactSupplier (
     supplier_id INTEGER NOT NULL,
     email TEXT NULL UNIQUE CHECK(LENGTH(email)>4),
-    phone TEXT NULL UNIQUE CHECK(LENGTH(phone)=10),
+    phone TEXT NULL UNIQUE CHECK(LENGTH(phone)=10 and (phone GLOB '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]')),
     FOREIGN KEY(supplier_id) REFERENCES supplier(supplier_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
 
--- storeProduct entity
 CREATE TABLE storeProduct (
     store_id INTEGER NOT NULL,
-    product_id TEXT NOT NULL CHECK(LENGTH(product_id)=12), -- Check product_id length to be 12 characters following UPC qrcode standard
+    product_id INTEGER NOT NULL,
     quantity INTEGER NOT NULL CHECK(quantity >= 0), -- Check quantity to be positive
     PRIMARY KEY(store_id, product_id) -- This is a must for SQLite3 to create composite primary keys!
     FOREIGN KEY(store_id) REFERENCES store(store_id)
@@ -190,40 +187,39 @@ CREATE TABLE storeProduct (
         ON UPDATE CASCADE
 );
 
--- orderRecord entity
 CREATE TABLE orderRecord (
     order_id INTEGER PRIMARY KEY AUTOINCREMENT,
     customer_id INTEGER NOT NULL,
     employee_id INTEGER NOT NULL,
-    date_order DATE NOT NULL CHECK((date_order GLOB '[12][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]') AND 
+    date_order DATE NOT NULL CHECK ((date_order GLOB '[12][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]') AND
                                 (CAST(strftime('%Y',date(date_order)) AS INTEGER)
-                                    BETWEEN 1900 AND 2023) AND 
-                                    (CAST(strftime('%m',date(date_order)) AS INTEGER) BETWEEN 1 AND 12) AND
-                                    (CASE
-                                        WHEN (CAST(strftime('%m',date(date_order)) AS INTEGER) IN (1,3,5,7,8,10,12)) THEN 
-                                            (CAST(strftime('%d',date(date_order)) AS INTEGER) BETWEEN 1 AND 31)
-                                        WHEN (CAST(strftime('%m',date(date_order)) AS INTEGER) IN (4,6,9,11)) THEN 
-                                            (CAST(strftime('%d',date(date_order)) AS INTEGER) BETWEEN 1 AND 30)
-                                        WHEN (CAST(strftime('%m',date(date_order)) AS INTEGER) == 2) THEN 
-                                            CASE
-                                                WHEN (CAST(strftime('%Y',date(date_order)) AS INTEGER) % 4 != 0) THEN 
-                                                    (CAST(strftime('%d',date(date_order)) AS INTEGER) BETWEEN 1 AND 28)
-                                            ELSE
-                                                CASE
-                                                    WHEN (CAST(strftime('%Y',date(date_order)) AS INTEGER) % 100 == 0) THEN 
-                                                        CASE
-                                                            WHEN (CAST(strftime('%Y',date(date_order)) AS INTEGER) % 400 == 0) THEN 
-                                                                (CAST(strftime('%d',date(date_order)) AS INTEGER) BETWEEN 1 AND 29)
-                                                            ELSE
-                                                                (CAST(strftime('%d',date(date_order)) AS INTEGER) BETWEEN 1 AND 28) 
-                                                        END
-                                                    ELSE
-                                                        (CAST(strftime('%d',date(date_order)) AS INTEGER) BETWEEN 1 AND 29) 
-                                                END
-                                            END
-                                    ELSE
-                                        (1 == 2)
-                                    END)),
+                                    BETWEEN 1900 AND 2023) AND
+                                 (CAST(strftime('%m',date(date_order)) AS INTEGER) BETWEEN 1 AND 12) AND
+                                 (CASE
+                                   WHEN (CAST(strftime('%m',date(date_order)) AS INTEGER) IN (1,3,5,7,8,10,12)) THEN
+                                     (CAST(strftime('%d',date(date_order)) AS INTEGER) BETWEEN 1 AND 31)
+                                   WHEN (CAST(strftime('%m',date(date_order)) AS INTEGER) IN (4,6,9,11)) THEN
+                                     (CAST(strftime('%d',date(date_order)) AS INTEGER) BETWEEN 1 AND 30)
+                                   WHEN (CAST(strftime('%m',date(date_order)) AS INTEGER) == 2) THEN
+                                     CASE
+                                       WHEN (CAST(strftime('%Y',date(date_order)) AS INTEGER) % 4 != 0) THEN
+                                         (CAST(strftime('%d',date(date_order)) AS INTEGER) BETWEEN 1 AND 28)
+                                       ELSE
+                                         CASE
+                                           WHEN (CAST(strftime('%Y',date(date_order)) AS INTEGER) % 100 == 0) THEN
+                                             CASE
+                                               WHEN (CAST(strftime('%Y',date(date_order)) AS INTEGER) % 400 == 0) THEN
+                                                 (CAST(strftime('%d',date(date_order)) AS INTEGER) BETWEEN 1 AND 29)
+                                               ELSE
+                                                 (CAST(strftime('%d',date(date_order)) AS INTEGER) BETWEEN 1 AND 28)
+                                             END
+                                           ELSE
+                                             (CAST(strftime('%d',date(date_order)) AS INTEGER) BETWEEN 1 AND 29)
+                                           END
+                                       END
+                                   ELSE
+                                     (1 == 2)
+                                  END)),
     order_status TEXT NOT NULL CHECK(order_status in ('Pending', 'Cancel', 'Completed')), -- Check order_status to be one of these values
     description TEXT,
     online_status BOOLEAN NOT NULL CHECK(online_status in (0, 1)), -- Check online_status to be either 0 or 1, 0 is false, 1 is true
@@ -235,10 +231,9 @@ CREATE TABLE orderRecord (
         ON UPDATE CASCADE
 );
 
--- orderItem entity
 CREATE TABLE orderItem (
     order_id INTEGER NOT NULL,
-    product_id TEXT NOT NULL CHECK(LENGTH(product_id)=12),
+    product_id INTEGER NOT NULL,
     store_id INTEGER NOT NULL,
     quantity INTEGER NOT NULL CHECK(quantity >= 0),
     PRIMARY KEY(order_id, product_id, store_id),
@@ -259,35 +254,35 @@ CREATE TABLE payment (
     order_id INTEGER NOT NULL,
     account_number TEXT NOT NULL CHECK(LENGTH(account_number) >= 10),
     payment_status TEXT NOT NULL CHECK(payment_status in ('Pending', 'Cancel', 'Completed')),
-    payment_date DATE NOT NULL CHECK((payment_date GLOB '[12][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]') AND
+    payment_date DATE NOT NULL CHECK ((payment_date GLOB '[12][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]') AND
                                 (CAST(strftime('%Y',date(payment_date)) AS INTEGER)
                                     BETWEEN 1900 AND 2023) AND
-                                    (CAST(strftime('%m',date(payment_date)) AS INTEGER) BETWEEN 1 AND 12) AND
-                                    (CASE
-                                        WHEN (CAST(strftime('%m',date(payment_date)) AS INTEGER) IN (1,3,5,7,8,10,12)) THEN
-                                            (CAST(strftime('%d',date(payment_date)) AS INTEGER) BETWEEN 1 AND 31)
-                                        WHEN (CAST(strftime('%m',date(payment_date)) AS INTEGER) IN (4,6,9,11)) THEN
-                                            (CAST(strftime('%d',date(payment_date)) AS INTEGER) BETWEEN 1 AND 30)
-                                        WHEN (CAST(strftime('%m',date(payment_date)) AS INTEGER) == 2) THEN
-                                            CASE
-                                                WHEN (CAST(strftime('%Y',date(payment_date)) AS INTEGER) % 4 != 0) THEN
-                                                    (CAST(strftime('%d',date(payment_date)) AS INTEGER) BETWEEN 1 AND 28)
-                                            ELSE
-                                                CASE
-                                                    WHEN (CAST(strftime('%Y',date(payment_date)) AS INTEGER) % 100 == 0) THEN
-                                                        CASE
-                                                            WHEN (CAST(strftime('%Y',date(payment_date)) AS INTEGER) % 400 == 0) THEN
-                                                                (CAST(strftime('%d',date(payment_date)) AS INTEGER) BETWEEN 1 AND 29)
-                                                            ELSE
-                                                                (CAST(strftime('%d',date(payment_date)) AS INTEGER) BETWEEN 1 AND 28)
-                                                        END
-                                                    ELSE
-                                                        (CAST(strftime('%d',date(payment_date)) AS INTEGER) BETWEEN 1 AND 29)
-                                                END
-                                            END
-                                    ELSE
-                                        (1 == 2)
-                                    END)),
+                                 (CAST(strftime('%m',date(payment_date)) AS INTEGER) BETWEEN 1 AND 12) AND
+                                 (CASE
+                                   WHEN (CAST(strftime('%m',date(payment_date)) AS INTEGER) IN (1,3,5,7,8,10,12)) THEN
+                                     (CAST(strftime('%d',date(payment_date)) AS INTEGER) BETWEEN 1 AND 31)
+                                   WHEN (CAST(strftime('%m',date(payment_date)) AS INTEGER) IN (4,6,9,11)) THEN
+                                     (CAST(strftime('%d',date(payment_date)) AS INTEGER) BETWEEN 1 AND 30)
+                                   WHEN (CAST(strftime('%m',date(payment_date)) AS INTEGER) == 2) THEN
+                                     CASE
+                                       WHEN (CAST(strftime('%Y',date(payment_date)) AS INTEGER) % 4 != 0) THEN
+                                         (CAST(strftime('%d',date(payment_date)) AS INTEGER) BETWEEN 1 AND 28)
+                                       ELSE
+                                         CASE
+                                           WHEN (CAST(strftime('%Y',date(payment_date)) AS INTEGER) % 100 == 0) THEN
+                                             CASE
+                                               WHEN (CAST(strftime('%Y',date(payment_date)) AS INTEGER) % 400 == 0) THEN
+                                                 (CAST(strftime('%d',date(payment_date)) AS INTEGER) BETWEEN 1 AND 29)
+                                               ELSE
+                                                 (CAST(strftime('%d',date(payment_date)) AS INTEGER) BETWEEN 1 AND 28)
+                                             END
+                                           ELSE
+                                             (CAST(strftime('%d',date(payment_date)) AS INTEGER) BETWEEN 1 AND 29)
+                                           END
+                                       END
+                                   ELSE
+                                     (1 == 2)
+                                  END)),
     payment_gateway TEXT NOT NULL,
     payment_tax REAL NOT NULL CHECK(payment_tax >= 0),
     payment_discount REAL NOT NULL CHECK(payment_discount >= 0),
@@ -303,36 +298,36 @@ CREATE TABLE payment (
 CREATE TABLE delivery (
     supplier_id INTEGER NOT NULL,
     store_id INTEGER NOT NULL,
-    product_id TEXT NOT NULL CHECK(LENGTH(product_id)=12),
-    date_delivery DATE NOT NULL CHECK((date_delivery GLOB '[12][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]') AND
+    product_id INTEGER NOT NULL,
+    date_delivery DATE NOT NULL CHECK ((date_delivery GLOB '[12][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]') AND
                                 (CAST(strftime('%Y',date(date_delivery)) AS INTEGER)
                                     BETWEEN 1900 AND 2023) AND
-                                    (CAST(strftime('%m',date(date_delivery)) AS INTEGER) BETWEEN 1 AND 12) AND
-                                    (CASE
-                                        WHEN (CAST(strftime('%m',date(date_delivery)) AS INTEGER) IN (1,3,5,7,8,10,12)) THEN
-                                            (CAST(strftime('%d',date(date_delivery)) AS INTEGER) BETWEEN 1 AND 31)
-                                        WHEN (CAST(strftime('%m',date(date_delivery)) AS INTEGER) IN (4,6,9,11)) THEN
-                                            (CAST(strftime('%d',date(date_delivery)) AS INTEGER) BETWEEN 1 AND 30)
-                                        WHEN (CAST(strftime('%m',date(date_delivery)) AS INTEGER) == 2) THEN
-                                            CASE
-                                                WHEN (CAST(strftime('%Y',date(date_delivery)) AS INTEGER) % 4 != 0) THEN
-                                                    (CAST(strftime('%d',date(date_delivery)) AS INTEGER) BETWEEN 1 AND 28)
-                                            ELSE
-                                                CASE
-                                                    WHEN (CAST(strftime('%Y',date(date_delivery)) AS INTEGER) % 100 == 0) THEN
-                                                        CASE
-                                                            WHEN (CAST(strftime('%Y',date(date_delivery)) AS INTEGER) % 400 == 0) THEN
-                                                                (CAST(strftime('%d',date(date_delivery)) AS INTEGER) BETWEEN 1 AND 29)
-                                                            ELSE
-                                                                (CAST(strftime('%d',date(date_delivery)) AS INTEGER) BETWEEN 1 AND 28)
-                                                        END
-                                                    ELSE
-                                                        (CAST(strftime('%d',date(date_delivery)) AS INTEGER) BETWEEN 1 AND 29)
-                                                END
-                                            END
-                                    ELSE
-                                        (1 == 2)
-                                    END)),
+                                 (CAST(strftime('%m',date(date_delivery)) AS INTEGER) BETWEEN 1 AND 12) AND
+                                 (CASE
+                                   WHEN (CAST(strftime('%m',date(date_delivery)) AS INTEGER) IN (1,3,5,7,8,10,12)) THEN
+                                     (CAST(strftime('%d',date(date_delivery)) AS INTEGER) BETWEEN 1 AND 31)
+                                   WHEN (CAST(strftime('%m',date(date_delivery)) AS INTEGER) IN (4,6,9,11)) THEN
+                                     (CAST(strftime('%d',date(date_delivery)) AS INTEGER) BETWEEN 1 AND 30)
+                                   WHEN (CAST(strftime('%m',date(date_delivery)) AS INTEGER) == 2) THEN
+                                     CASE
+                                       WHEN (CAST(strftime('%Y',date(date_delivery)) AS INTEGER) % 4 != 0) THEN
+                                         (CAST(strftime('%d',date(date_delivery)) AS INTEGER) BETWEEN 1 AND 28)
+                                       ELSE
+                                         CASE
+                                           WHEN (CAST(strftime('%Y',date(date_delivery)) AS INTEGER) % 100 == 0) THEN
+                                             CASE
+                                               WHEN (CAST(strftime('%Y',date(date_delivery)) AS INTEGER) % 400 == 0) THEN
+                                                 (CAST(strftime('%d',date(date_delivery)) AS INTEGER) BETWEEN 1 AND 29)
+                                               ELSE
+                                                 (CAST(strftime('%d',date(date_delivery)) AS INTEGER) BETWEEN 1 AND 28)
+                                             END
+                                           ELSE
+                                             (CAST(strftime('%d',date(date_delivery)) AS INTEGER) BETWEEN 1 AND 29)
+                                           END
+                                       END
+                                   ELSE
+                                     (1 == 2)
+                                  END)),
     cost REAL NOT NULL,
     quantity INTEGER NOT NULL CHECK(quantity >= 0),
     delivery_status TEXT NOT NULL CHECK(delivery_status in ('Pending', 'Cancel', 'Completed')),
@@ -349,4 +344,7 @@ CREATE TABLE delivery (
 );
 COMMIT TRANSACTION;
 .table
+-- This is a run another script to insert data into the database
+.read insert_data.sql
+
 -- If you go here without errors, then your database is on the disk and ready-to-go!
