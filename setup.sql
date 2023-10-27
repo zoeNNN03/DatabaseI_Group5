@@ -57,17 +57,6 @@ CREATE TABLE customer (
     birthday DATE NOT NULL CHECK ((birthday GLOB '[12][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]') AND
                                 (CAST(strftime('%Y',date(birthday)) AS INTEGER)
                                     BETWEEN 1900 AND 2023) AND
-                                    -- Using current date will not work to specify the end of the range.
-                                    -- SQLite says doing that is bad because it is a
-                                    -- "non-deterministic use of date() in a CHECK constraint"
-                                    -- i.e, do not try this: (CAST(strftime('%Y',date('now')) AS INTEGER))
-                                    -- I hard-coded 2023.  This would require the DBA to do a database dump,
-                                    -- update the year in the dump file, and a reload the dump
-                                    -- on December 31 of every year, which would need to be in
-                                    -- the application's documentation for the DBA....  Eventually
-                                    -- the 1900 would also be updated to a larger number too.
-                                    -- I assume nobody born before 1910 (113 years old!) is
-                                    -- going to be looking for a job from a recruiter.
                                  (CAST(strftime('%m',date(birthday)) AS INTEGER) BETWEEN 1 AND 12) AND
                                  (CASE
                                    WHEN (CAST(strftime('%m',date(birthday)) AS INTEGER) IN (1,3,5,7,8,10,12)) THEN
