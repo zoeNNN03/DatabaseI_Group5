@@ -1,5 +1,3 @@
--- This file is used to insert example data into the database
-
 PRAGMA foreign_keys = ON;
 PRAGMA encoding='UTF-8';
 BEGIN TRANSACTION;
@@ -16,14 +14,14 @@ INSERT INTO contactStore(store_id, email, phone) VALUES('1', 'Burapha.buu@gmail.
 INSERT INTO contactStore(store_id, email, phone) VALUES('2', 'BUUshop@buu.ac.th','0886982864');
 
 -- product
-INSERT INTO product(product_id, product_name, brand, category, size, unit_price, stock, image_url)
-VALUES('036000291452', 'T-shirt', 'BUU', 'clothes', 'S', '380', '60', 'testUrl');
-INSERT INTO product(product_id, product_name, category, size, unit_price, stock, image_url, description)
-VALUES('036000291453', 'Slacks', 'clothes', 'XL', '420', '70', 'testUrl', 'Student pants');
-INSERT INTO product(product_id, product_name, brand, category, unit_price, stock, image_url)
-VALUES('136000291452', 'Pen', 'Lancer', 'stationery', '20', '110', 'testUrl');
-INSERT INTO product(product_id, product_name, brand, category, unit_price, stock, image_url, description)
-VALUES('236000291452', 'Python101', 'Chula', 'book', '285', '70', 'testUrl', 'Learn tutorial python');
+INSERT INTO product(product_upc, product_name, brand, category, size, unit_price)
+VALUES('036000291452', 'T-shirt', 'BUU', 'clothes', 'S', '380');
+INSERT INTO product(product_upc, product_name, category, size, unit_price, description)
+VALUES('036000291453', 'Slacks', 'clothes', 'XL', '420', 'Student pants');
+INSERT INTO product(product_upc, product_name, brand, category, unit_price)
+VALUES('136000291452', 'Pen', 'Lancer', 'stationery', '20');
+INSERT INTO product(product_upc, product_name, brand, category, unit_price, description)
+VALUES('236000291452', 'Python101', 'Chula', 'book', '285', 'Learn tutorial python');
 
 -- customer
 INSERT INTO customer(f_name, l_name, birthday, gender, address_no, street, sub_district, district, province, zipcode, email, phone)
@@ -45,13 +43,13 @@ VALUES('1', 'John','Smith', 'M', '1973-10-03','mrjs@dizzy.com','5551234567', 'Ma
 INSERT INTO employee(store_id, f_name, l_name, gender, birthday, email, phone, job_position, salary, address_no, sub_district, district, province, zipcode)
 VALUES('1', 'Jane','Smith', 'F', '2000-11-11', 'msjs@dizzy.com','5551234568', 'Seller', '15000', '102/2', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
 INSERT INTO employee(store_id, f_name, l_name, gender, birthday, email, phone, job_position, salary, address_no, street, sub_district, district, province, zipcode)
-VALUES('2','Clarence','Kentucky', 'F', '2000-12-05','ck@deemag.co.th','5559999999', 'General', '10000', '103/3', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
+VALUES('2','Clarence','Kentucky', 'F', '2000-12-05','ck@deemag.co.th','5559999999', 'Cashier', '10000', '103/3', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
 INSERT INTO employee(store_id, f_name, l_name, gender, birthday, email, phone, job_position, salary, address_no, street, sub_district, district, province, zipcode)
 VALUES('2','Bruce','Bell', 'M', '2000-12-05','brucebell@deemag.co.th','0012311111', 'Manager', '30000', '104/4', 'Long Had Bangsaen Rd', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
 INSERT INTO employee(store_id, f_name, l_name, gender, birthday, email, phone, job_position, salary, address_no, sub_district, district, province, zipcode)
 VALUES('3', 'Clark','Kent', 'M', '2000-12-05','superman@dc.com','0011113451', 'Seller', '20000', '105/5', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
 INSERT INTO employee(store_id, f_name, l_name, gender, birthday, email, phone, job_position, salary, address_no, sub_district, district, province, zipcode)
-VALUES('3','Peter','Parker', 'M', '2000-02-05','spiderman@dc.com','0067891111', 'Seller', '20000', '106/6', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
+VALUES('3','Peter','Parker', 'M', '2000-02-05','spiderman@dc.com','0067891111', 'Cashier', '20000', '106/6', 'Saen Suk', 'Chon Buri District', 'Chon Buri', '20131');
 
 -- supplier
 INSERT INTO supplier(supplier_name, supplier_account, address_no, sub_district, district, province, zipcode)
@@ -68,18 +66,18 @@ INSERT INTO contactSupplier(supplier_id, email) VALUES('2', 'doble.b@gmail.com')
 INSERT INTO contactSupplier(supplier_id, phone) VALUES('3', '0904500003');
 
 -- storeProduct
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, '036000291452', 10);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, '036000291453', 20);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, '136000291452', 20);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, '236000291452', 10);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, '036000291452', 40);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, '036000291453', 10);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, '136000291452', 10);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, '236000291452', 40);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, '036000291452', 20);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, '036000291453', 10);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, '136000291452', 30);
-INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, '236000291452', 30);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, 1, 10);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, 2, 20);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, 3, 20);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (1, 4, 10);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, 1, 40);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, 2, 10);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, 3, 10);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (2, 4, 40);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, 1, 20);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, 2, 10);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, 3, 30);
+INSERT INTO storeProduct(store_id, product_id, quantity) VALUES (3, 4, 30);
 
 -- orderRecord
 INSERT INTO orderRecord(customer_id, employee_id, date_order, order_status, online_status)
@@ -97,21 +95,21 @@ VALUES('6', '6', '2023-10-15', 'Completed', '1');
 
 -- orderItem
 INSERT INTO orderItem(order_id, product_id, store_id, quantity)
-VALUES('1', '036000291452', '1', '1');
+VALUES('1', 1, '1', '1');
 INSERT INTO orderItem(order_id, product_id, store_id, quantity)
-VALUES('1', '036000291453', '1', '10');
+VALUES('1', 2, '1', '10');
 INSERT INTO orderItem(order_id, product_id, store_id, quantity)
-VALUES('2', '036000291453', '1', '5');
+VALUES('2', 2, '1', '5');
 INSERT INTO orderItem(order_id, product_id, store_id, quantity)
-VALUES('3', '136000291452', '2', '10');
+VALUES('3', 3, '2', '10');
 INSERT INTO orderItem(order_id, product_id, store_id, quantity)
-VALUES('3', '236000291452', '2', '1');
+VALUES('3', 4, '2', '1');
 INSERT INTO orderItem(order_id, product_id, store_id, quantity)
-VALUES('4', '036000291452', '2', '3');
+VALUES('4', 1, '2', '3');
 INSERT INTO orderItem(order_id, product_id, store_id, quantity)
-VALUES('4', '036000291453', '3', '1');
+VALUES('4', 2, '3', '1');
 INSERT INTO orderItem(order_id, product_id, store_id, quantity)
-VALUES('6', '236000291452', '3', '20');
+VALUES('6', 4, '3', '20');
 
 -- payment
 INSERT INTO payment(customer_id, order_id, account_number, payment_status, payment_date, payment_gateway, payment_tax, payment_discount, receiver_account)
@@ -129,16 +127,16 @@ VALUES('5', '6', '5095881796','Completed', '2022-10-15', 'Credit Card', '0.07', 
 
 -- delivery
 INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, delivery_status)
-VALUES('1', '1', '036000291452', '2022-10-22', '1000', '20', 'Completed');
+VALUES('1', '1', 1, '2022-10-22', '1000', '20', 'Completed');
 INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, delivery_status)
-VALUES('2', '1', '136000291452', '2022-11-22', '1500', '20', 'Completed');
+VALUES('2', '1', 3, '2022-11-22', '1500', '20', 'Completed');
 INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, delivery_status)
-VALUES('2', '2', '136000291452', '2022-12-22', '500', '20', 'Completed');
+VALUES('2', '2', 3, '2022-12-22', '500', '20', 'Completed');
 INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, delivery_status)
-VALUES('1', '2', '036000291453', '2023-01-22', '1000', '10', 'Pending');
+VALUES('1', '2', 2, '2023-01-22', '1000', '10', 'Pending');
 INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, delivery_status)
-VALUES('3', '3', '136000291452', '2023-02-22', '400', '30', 'Completed');
+VALUES('3', '3', 3, '2023-02-22', '400', '30', 'Completed');
 INSERT INTO delivery(supplier_id, store_id, product_id, date_delivery, cost, quantity, delivery_status)
-VALUES('3', '3', '236000291452', '2023-03-22', '1000', '20', 'Completed');
+VALUES('3', '3', 4, '2023-03-22', '1000', '20', 'Completed');
 .print 'Successfully inserted example'
 COMMIT TRANSACTION;

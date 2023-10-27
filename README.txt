@@ -25,17 +25,16 @@ After unzip file.
 1. Install sqlite(https://www.sqlite.org/download.html) to ../DatabaseI_Group5
 2. Run terminal or cmd, and change directory to ../DatabaseI_Group5
 3. Run './sqlite3.exe [your_database]'.
-4. Use '.read setup.sql' to create tables, if nothing goes wrong the names of all tables will be displayed.
-5. Use '.read insert_data.sql' for insert example data.
-6. Try using the query command from folder "query".
-   6.1 query/query01.sql
-   6.2 query/query02.sql
-   6.3 query/query03.sql
-   6.4 query/query04.sql
-   6.5 query/query05.sql
-7. Try using the update&delete command from folder "update&delete".
-   7.1 update_delete/update.sql
-   7.2 update_delete/delete.sql
+4. Use '.read setup.sql' to create tables, if nothing goes wrong the names of all tables will be displayed and Successfully.
+5. Try using the query command from folder "query".
+   5.1 query/query01.sql
+   5.2 query/query02.sql
+   5.3 query/query03.sql
+   5.4 query/query04.sql
+   5.5 query/query05.sql
+6. Try using the update&delete command from folder "update&delete".
+   6.1 update_delete/update.sql
+   6.2 update_delete/delete.sql
 
 ## Attribute detail
 1. The DATE data type fields (example payment date, birthday, etc.) that use the yyyy-mm-dd format and complex validation CHECK constraints
@@ -48,33 +47,25 @@ After unzip file.
    -- EXCEPT every year evenly divisible 100 is not a leap year
    -- UNLESS it is evenly divisible by 400
    To perform these checks we use the GLOB operator, strftime, CAST, and CASE in a CHECK constraint.
-
 2. employee, customer has a gender field supporting:
    M male
    F female
    H hermaphrodite
-
 3. [name]_id is the primary key of each entity example produch_id, customer_id.
-
 4. [name]_status is is the status of each available action.
    'Pending',
    'Cancelled',
    'Completed'
    for example delivery.status is the status of delivery
-
 5. orderRecord has a online_status field is to verify that the order has been made. Is it an online order?
    1 is online order
    0 isn't online order
-
 6. In the table with information about the amount Remember that the data is decimal. The program uses the REAL datatype and all units of
    the data are in baht.
-
 7. In the table with information about quantity units Remember that data is EA volume.
-
 8. product has a size field support only clothes('S', 'M', 'L', 'XL', '2XL', '3XL').
-
-9. product has a product_id field using only UPC qrcode and has a CHECK constraint to check whether the characters are 12 or not
+9. product has a product_upc field using only UPC qrcode and has a CHECK constraint to check whether the characters are 12 or not
    because UPC qrcode only contains 12 digits.
-
-10. In us code have mutivalue attribute. We know sqlite3 not support but We studied the data and found that the data can be stored in
+10. employee has a job_position field support only clothes('Manager', 'Seller', 'Cashier').
+11. In us code have mutivalue attribute. We know sqlite3 not support but We studied the data and found that the data can be stored in
     separate tables(contactStore, contactSupplier). Because 1 of our query has to query such information. Therefore, we request permission not to edit the information. Apologies for such mistake.

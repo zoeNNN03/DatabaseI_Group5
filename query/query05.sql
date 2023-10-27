@@ -6,8 +6,7 @@ SELECT
     store.store_name AS "Store Name",
     date_delivery AS "Delivery Date",
     quantity AS "Quantity",
-    cost AS "Cost(BATH)",
-    -- group concat for get all email and phone in one row if there are more than one contact of each supplier
+    cost AS "Cost(bath)",
     GROUP_CONCAT(contactSupplier.email, ', ') AS "Email",
     GROUP_CONCAT(contactSupplier.phone, ', ') AS "Contact",
     delivery.delivery_status AS "Status"
@@ -16,7 +15,5 @@ INNER JOIN contactSupplier ON supplier.supplier_id = contactSupplier.supplier_id
 INNER JOIN delivery ON supplier.supplier_id = delivery.supplier_id
 INNER JOIN product ON product.product_id = delivery.product_id
 INNER JOIN store ON store.store_id = delivery.store_id
-WHERE delivery.delivery_status = 'Pending' -- get only pending delivery
-GROUP BY supplier.supplier_id; -- group by supplier id for get only one row of each supplier
-
--- Path: query/query05.sql
+WHERE delivery.delivery_status = 'Pending'
+GROUP BY supplier.supplier_id;
