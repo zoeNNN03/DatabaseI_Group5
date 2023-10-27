@@ -31,7 +31,7 @@ CREATE TABLE store (
 CREATE TABLE contactStore (
     store_id INTEGER NOT NULL,
     email TEXT UNIQUE CHECK(LENGTH(email)>4),
-    phone TEXT UNIQUE CHECK(LENGTH(phone)=10),
+    phone TEXT UNIQUE CHECK(LENGTH(phone)=10 and (phone GLOB '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]')),
     FOREIGN KEY(store_id) REFERENCES store(store_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
@@ -96,7 +96,7 @@ CREATE TABLE customer (
                                   END)),
     gender TEXT CHECK(gender in ('M', 'F', 'H')),
     email TEXT NOT NULL UNIQUE CHECK(LENGTH(email)>4),
-    phone TEXT NOT NULL UNIQUE CHECK(LENGTH(phone)=10),
+    phone TEXT NOT NULL UNIQUE CHECK(LENGTH(phone)=10 and (phone GLOB '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]')),
     address_no TEXT NOT NULL,
     street TEXT,
     sub_district TEXT NOT NULL,
@@ -144,7 +144,7 @@ CREATE TABLE employee (
     job_position TEXT NOT NULL CHECK(job_position in ('Manager', 'Seller', 'Cashier')),
     salary REAL NOT NULL CHECK(salary >= 0),
     email TEXT NOT NULL UNIQUE CHECK(LENGTH(email)>4),
-    phone TEXT NOT NULL UNIQUE CHECK(LENGTH(phone)=10),
+    phone TEXT NOT NULL UNIQUE CHECK(LENGTH(phone)=10 and (phone GLOB '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]')),
     address_no TEXT NOT NULL,
     street TEXT,
     sub_district TEXT NOT NULL,
@@ -172,7 +172,7 @@ CREATE TABLE supplier (
 CREATE TABLE contactSupplier (
     supplier_id INTEGER NOT NULL,
     email TEXT NULL UNIQUE CHECK(LENGTH(email)>4),
-    phone TEXT NULL UNIQUE CHECK(LENGTH(phone)=10),
+    phone TEXT NULL UNIQUE CHECK(LENGTH(phone)=10 and (phone GLOB '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]')),
     FOREIGN KEY(supplier_id) REFERENCES supplier(supplier_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
