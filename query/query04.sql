@@ -1,8 +1,7 @@
 -- This is a query to show TOP 3 Employee who makes the most profit. by using SUM(product.unit_price * orderItem.quantity) AS "total_sales(BAHT)"   
 
 PRAGMA foreign_keys = ON;
-.print 'Query04 : TOP 3 Employee who makes'
-.print 'the most profit.'
+.print 'Query04 : TOP 3 Employee who makes the most profit.'
 SELECT employee.f_name,
     employee.l_name,
     SUM(product.unit_price * orderItem.quantity) AS "total_sales(BAHT)"
